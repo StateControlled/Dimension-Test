@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
-import com.statecontrolled.dimensiontest.world.biome.ModCarvers;
+//import com.statecontrolled.dimensiontest.world.biome.ModCarvers;
 import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
 import net.minecraft.core.HolderLookup;
@@ -18,7 +18,7 @@ public class WorldGenProvider extends DatapackBuiltinEntriesProvider {
 
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.BIOME, ModBiomes::bootstrap)
-            .add(Registries.CONFIGURED_CARVER, ModCarvers::bootstrap)
+            //.add(Registries.CONFIGURED_CARVER, ModCarvers::bootstrap)
             .add(Registries.LEVEL_STEM, TestDimension::bootstrapStem)
             .add(Registries.DIMENSION_TYPE, TestDimension::bootstrapType);
 

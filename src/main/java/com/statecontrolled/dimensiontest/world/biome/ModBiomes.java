@@ -14,7 +14,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_ONE = register("biome_one");
@@ -44,8 +43,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome One");
-        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
+//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome One");
+//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
 
         globalGenerationFeatures(biomeBuilder);
 
@@ -73,8 +72,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Two");
-        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
+//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Two");
+//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
 
         globalGenerationFeatures(biomeBuilder);
 
@@ -102,8 +101,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Three");
-        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
+//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Three");
+//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
 
         globalGenerationFeatures(biomeBuilder);
 

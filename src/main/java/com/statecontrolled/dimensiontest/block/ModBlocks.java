@@ -4,8 +4,10 @@ import static com.statecontrolled.dimensiontest.item.ModItems.ITEMS;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
@@ -18,7 +20,8 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(DimensionTest.MOD_ID);
 
     // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> SAPPHIRE_BLOCK = BLOCKS.registerSimpleBlock("sapphire_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
+    public static final DeferredBlock<Block> SAPPHIRE_BLOCK =
+            BLOCKS.registerSimpleBlock("sapphire_block", BlockBehaviour.Properties.of().strength(0.15f).sound(SoundType.AMETHYST));
 
     // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
     //public static final DeferredItem<BlockItem> SAPPHIRE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("sapphire_block", SAPPHIRE_BLOCK);

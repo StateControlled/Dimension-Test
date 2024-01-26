@@ -1,0 +1,48 @@
+{
+  "type": "dimensiontest:m_dimension",
+  "generator": {
+    "type": "dimensiontest:dim_chunk_generator",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "dimensiontest:biome_one",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.0,
+            "humidity": 0.5,
+            "offset": 0.0,
+            "temperature": 0.65,
+            "weirdness": 1.0
+          }
+        },
+        {
+          "biome": "dimensiontest:biome_two",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.0,
+            "humidity": 0.7,
+            "offset": 0.0,
+            "temperature": 0.85,
+            "weirdness": 1.0
+          }
+        },
+        {
+          "biome": "dimensiontest:biome_three",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.0,
+            "humidity": 0.6,
+            "offset": 0.0,
+            "temperature": 0.75,
+            "weirdness": 1.0
+          }
+        }
+      ]
+    },
+    "settings": "minecraft:overworld"
+  }
+}

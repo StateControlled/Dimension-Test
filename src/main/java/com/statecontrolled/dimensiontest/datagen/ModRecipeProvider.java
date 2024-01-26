@@ -14,8 +14,9 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 
-public class ModRecipeProvider extends RecipeProvider {
+public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, lookupProvider);
@@ -25,8 +26,9 @@ public class ModRecipeProvider extends RecipeProvider {
     protected void buildRecipes(RecipeOutput recipeOutput) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAPPHIRE.get(), 9)
                 .requires(ModBlocks.SAPPHIRE_BLOCK.get(), 1)
+                .group("Mod_Recipes")
                 .unlockedBy("has_item", has(ModBlocks.SAPPHIRE_BLOCK.get()))
-                .save(recipeOutput);
+                .save(recipeOutput, register("sapphire_block_recipe"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SAPPHIRE_BLOCK.get(), 1)
                 .pattern("SSS")
@@ -34,8 +36,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("SSS")
                 .define('S', ModItems.SAPPHIRE.get())
                 .unlockedBy("has_item", has(ModItems.SAPPHIRE.get()))
-                .save(recipeOutput);
+                .group("Mod_Recipes")
+                .save(recipeOutput, register("sapphire_recipe"));
 
+    }
+
+    private ResourceLocation register(String path) {
+        return new ResourceLocation(DimensionTest.MOD_ID, path);
     }
 
 }

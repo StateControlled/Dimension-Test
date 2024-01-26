@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dimensiontest:item/dimensional_thread_modulator"
+  }
+}

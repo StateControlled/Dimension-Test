@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dimensiontest:block/sapphire_block"
+    }
+  }
+}

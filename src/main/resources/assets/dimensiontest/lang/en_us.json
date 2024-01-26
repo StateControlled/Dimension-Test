@@ -1,0 +1,12 @@
+{
+    "item.dimensiontest.sapphire": "Sapphire",
+
+    "item.dimensiontest.dimensional_thread_modulator": "Dimensional Thread Modulator",
+
+    "block.dimensiontest.sapphire_block": "Block of Sapphire",
+
+    "tooltip.dimensiontest.dimensional_thread_modulator.tooltip.shift": "Dimensional teleportation item",
+    "tooltip.dimensiontest.dimensional_thread_modulator.tooltip": "Press §eSHIFT§r for more Information",
+
+    "creativetab.dimensiontest_tab":"Dimension Test Mod"
+}

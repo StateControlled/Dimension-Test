@@ -27,5 +27,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         this.tag(BlockTags.NEEDS_IRON_TOOL)
             .add(ModBlocks.SAPPHIRE_BLOCK.get());
 
+        this.tag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
+            .add(ModBlocks.SAPPHIRE_BLOCK.get());
+
     }
 }

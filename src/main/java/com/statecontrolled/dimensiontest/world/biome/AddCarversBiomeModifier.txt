@@ -1,0 +1,38 @@
+package com.statecontrolled.dimensiontest.world.biome;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.serialization.Codec;
+import com.statecontrolled.dimensiontest.ModTags;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.neoforged.neoforge.common.world.BiomeGenerationSettingsBuilder;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+
+public record AddCarversBiomeModifier(HolderSet<Biome> biomes, HolderSet<ConfiguredWorldCarver<?>> carvers, GenerationStep.Decoration step)
+        implements BiomeModifier {
+
+    public static List<Holder<ConfiguredWorldCarver<?>>> POSTGEN = new ArrayList<>();
+
+    @Override
+    public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        if (phase == Phase.ADD && biome.is(ModTags.Biomes.IS_MOD_BIOME)) {
+            BiomeGenerationSettingsBuilder generationSettings = builder.getGenerationSettings();
+            for (Holder<ConfiguredWorldCarver<?>> holder : this.carvers()) {
+                generationSettings.addCarver(GenerationStep.Carving.AIR, holder);
+            }
+        }
+    }
+
+    @Override
+    public Codec<? extends BiomeModifier> codec() {
+        return ModBiomeModifiers.ADD_CARVERS.get();
+    }
+
+}

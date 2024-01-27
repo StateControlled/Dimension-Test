@@ -1,0 +1,33 @@
+package com.statecontrolled.dimensiontest.world.biome;
+
+import java.util.function.Supplier;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.statecontrolled.dimensiontest.DimensionTest;
+
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+public class ModBiomeModifiers {
+    public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIER_SERIALIZERS =
+            DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, DimensionTest.MOD_ID);
+
+    public static final Supplier<Codec<AddCarversBiomeModifier>> ADD_CARVERS = BIOME_MODIFIER_SERIALIZERS.register("add_carver",
+            () -> RecordCodecBuilder.create(
+                    builder -> builder.group(
+                            Biome.LIST_CODEC.fieldOf("biomes").forGetter(AddCarversBiomeModifier::biomes),
+                            ConfiguredWorldCarver.LIST_CODEC.fieldOf("carvers").forGetter(AddCarversBiomeModifier::carvers),
+                            GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(AddCarversBiomeModifier::step)
+                    ).apply(builder, AddCarversBiomeModifier::new)));
+
+    public static void register(IEventBus event) {
+        BIOME_MODIFIER_SERIALIZERS.register(event);
+    }
+
+}

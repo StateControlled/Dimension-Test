@@ -1,37 +1,39 @@
 package com.statecontrolled.dimensiontest.world.biome;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.function.BiConsumer;
 
-import com.mojang.serialization.Codec;
+import com.statecontrolled.dimensiontest.DimensionTest;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.neoforged.neoforge.common.world.BiomeModifier;
-import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.minecraft.world.level.levelgen.carver.CarverConfiguration;
+import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
-public record ModCarvers(HolderSet<Biome> biomes, HolderSet<ConfiguredWorldCarver<?>> carvers, GenerationStep.Decoration step)
-        implements BiomeModifier {
+public class ModCarvers {
+//    public static final DeferredRegister<WorldCarver<?>> WORLD_CARVERS =
+//            DeferredRegister.create(Registries.CARVER, DimensionTest.MOD_ID);
 
-    public static List<Holder<ConfiguredWorldCarver<?>>> ADD_NOISE_FEATURES = new ArrayList<>();
+//    public static final DeferredHolder<WorldCarver<?>, CustomCarver> CUSTOM_CARVER =
+//            WORLD_CARVERS.register("custom_carver", () -> new CustomCarver(CaveCarverConfiguration.CODEC));
 
-    @Override
-    public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-        List<Holder<ConfiguredWorldCarver<?>>> addedCarvers = new ArrayList<>();
+//    public static final Supplier<CustomCarver> CUSTOM_CARVER =
+//            WORLD_CARVERS.register("custom_carver", () -> new CustomCarver(CaveCarverConfiguration.CODEC));
 
+//    public static void register(IEventBus event) {
+//        WORLD_CARVERS.register(event);
+//    }
+
+    public static WorldCarver<CaveCarverConfiguration> CUSTOM_CARVER;
+
+    public static void registerCarvers(BiConsumer<ResourceLocation, WorldCarver<?>> consumer) {
+        CUSTOM_CARVER = register(consumer, "custom_carver", new CustomCarver(CaveCarverConfiguration.CODEC));
     }
 
-    @Override
-    public Codec<? extends BiomeModifier> codec() {
-        return null;
+    private static <C extends CarverConfiguration> WorldCarver<C> register(
+            BiConsumer<ResourceLocation, WorldCarver<?>> consumer, String name, WorldCarver<C> carver) {
+
+        consumer.accept(new ResourceLocation(DimensionTest.MOD_ID, name), carver);
+        return carver;
     }
-
-
-
 
 }

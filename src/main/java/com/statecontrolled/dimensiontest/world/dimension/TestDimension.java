@@ -60,7 +60,7 @@ public class TestDimension {
     }
 
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init LevelStem");
+        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init LevelStem");
 
         HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
         HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
@@ -102,7 +102,7 @@ public class TestDimension {
 //                List.of()
 //            ).withBiomeAndLayers(layerInfo, Optional.of(direct), biomeSet);
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Biome Sources");
+        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Biome Sources");
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
                 new Climate.ParameterList<>(
                         List.of(
@@ -115,7 +115,7 @@ public class TestDimension {
 
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Chunk Generator");
+        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Chunk Generator");
 
         // VANILLA FLATLAND GENERATION
 //        FlatLevelSource flatlandChunkGenerator = new FlatLevelSource(settings);
@@ -130,7 +130,7 @@ public class TestDimension {
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Register Dimension");
+        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Register Dimension");
         context.register(M_LEVEL_STEM, levelStem);
     }
 

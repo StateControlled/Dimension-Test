@@ -12,8 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(DimensionTest.MOD_ID);
 
-    public static final DeferredItem<Item> SAPPHIRE = ITEMS.register("sapphire",
-            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SAPPHIRE = ITEMS.registerSimpleItem("sapphire", new Item.Properties());
 
     public static final DeferredItem<Item> DIMENSIONAL_THREAD_MODULATOR = ITEMS.register("dimensional_thread_modulator",
             () -> new DimensionalThreadModulator(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

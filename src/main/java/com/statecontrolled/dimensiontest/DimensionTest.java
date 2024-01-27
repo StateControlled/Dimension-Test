@@ -1,15 +1,25 @@
 package com.statecontrolled.dimensiontest;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.statecontrolled.dimensiontest.block.ModBlocks;
 import com.statecontrolled.dimensiontest.item.ModItems;
+//import com.statecontrolled.dimensiontest.world.biome.ModBiomeModifiers;
+import com.statecontrolled.dimensiontest.world.biome.ModCarvers;
 import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
@@ -32,8 +42,7 @@ public class DimensionTest {
         }
     }
 
-    // The constructor for the mod class is the first code that is run when your mod is loaded.
-    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    // NeoForge will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public DimensionTest(IEventBus modEventBus) {
         ModBlocks.register(modEventBus);
 
@@ -42,6 +51,12 @@ public class DimensionTest {
         ModChunkGenerators.register(modEventBus);
 
         ModCreativeModeTab.register(modEventBus);
+
+        ModCarvers.registerCarvers((location, carver) -> {
+            // TODO understand
+        });
+
+        //ModBiomeModifiers.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.

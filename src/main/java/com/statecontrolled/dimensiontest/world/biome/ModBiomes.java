@@ -44,7 +44,7 @@ public class ModBiomes {
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
 //        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome One");
-//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
+//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CUSTOM_CARVER.getKey());
 
         globalGenerationFeatures(biomeBuilder);
 

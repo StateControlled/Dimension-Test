@@ -26,7 +26,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     protected void buildRecipes(RecipeOutput recipeOutput) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAPPHIRE.get(), 9)
                 .requires(ModBlocks.SAPPHIRE_BLOCK.get(), 1)
-                .group("Mod_Recipes")
                 .unlockedBy("has_item", has(ModBlocks.SAPPHIRE_BLOCK.get()))
                 .save(recipeOutput, register("sapphire_block_recipe"));
 
@@ -36,7 +35,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("SSS")
                 .define('S', ModItems.SAPPHIRE.get())
                 .unlockedBy("has_item", has(ModItems.SAPPHIRE.get()))
-                .group("Mod_Recipes")
                 .save(recipeOutput, register("sapphire_recipe"));
 
     }

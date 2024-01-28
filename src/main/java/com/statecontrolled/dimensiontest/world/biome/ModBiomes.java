@@ -14,6 +14,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_ONE = register("biome_one");
@@ -45,6 +46,7 @@ public class ModBiomes {
 
 //        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome One");
 //        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CUSTOM_CARVER.getKey());
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
 
         globalGenerationFeatures(biomeBuilder);
 

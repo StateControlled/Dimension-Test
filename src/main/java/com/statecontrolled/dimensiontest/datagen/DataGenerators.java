@@ -36,9 +36,6 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 @Mod.EventBusSubscriber(modid = DimensionTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
-    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(Registries.CONFIGURED_CARVER, ModConfiguredCarvers::bootstrap);
-
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();

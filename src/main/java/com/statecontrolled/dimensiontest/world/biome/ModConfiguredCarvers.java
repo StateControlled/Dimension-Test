@@ -18,6 +18,9 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 
+/**
+ * Custom carver configuration
+ **/
 public class ModConfiguredCarvers {
     public static final ResourceKey<ConfiguredWorldCarver<?>> CUSTOM_CARVER_KEY = createKey("custom_carver");
 
@@ -32,6 +35,7 @@ public class ModConfiguredCarvers {
                     VerticalAnchor.aboveBottom(4),  // lava level
                     CarverDebugSettings.of(false, Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState()), // debug
                     blockGetter.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),                    // replaceable
+                    // TODO add mod blocks to replaceables
                     UniformFloat.of(0.85F, 2.0F),   // horizontal
                     UniformFloat.of(0.85F, 3.5F),   // vertical
                     UniformFloat.of(-0.1F, 0.1F)    // floor

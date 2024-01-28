@@ -9,6 +9,9 @@ import net.minecraft.world.level.levelgen.carver.CarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
+/**
+ * Hopefully will register custom carver so it can be used.
+ **/
 public class ModCarvers {
     public static WorldCarver<CaveCarverConfiguration> CUSTOM_CARVER;
 

@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
-//import com.statecontrolled.dimensiontest.world.biome.ModCarvers;
 import com.statecontrolled.dimensiontest.world.biome.ModConfiguredCarvers;
 import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 

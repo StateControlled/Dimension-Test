@@ -31,7 +31,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 /**
- * Automatic data generation for mod classes
+ * Automatic data generation
  **/
 @Mod.EventBusSubscriber(modid = DimensionTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {

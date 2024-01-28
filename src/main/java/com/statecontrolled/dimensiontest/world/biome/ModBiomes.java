@@ -16,6 +16,9 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
+/**
+ * Setup for mod biomes
+ **/
 public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_ONE = register("biome_one");
     public static final ResourceKey<Biome> BIOME_TWO = register("biome_two");
@@ -29,6 +32,9 @@ public class ModBiomes {
         return ResourceKey.create(Registries.BIOME, new ResourceLocation(DimensionTest.MOD_ID, name));
     }
 
+    /**
+     * Initialize biomes. Define biome settings.
+     **/
     public static void bootstrap(BootstapContext<Biome> context) {
         context.register(BIOME_ONE, initBiomeOne(context));
         context.register(BIOME_TWO, initBiomeTwo(context));

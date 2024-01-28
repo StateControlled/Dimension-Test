@@ -14,12 +14,12 @@ import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(DimensionTest.MOD_ID)
 public class DimensionTest {
     public static final String MOD_ID = "dimensiontest";
     public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(DimensionTest.class.getName());
 
+    // Setup for logger
     static {
         try {
             FileHandler fileHandler = new FileHandler("dimension_test.log", false);

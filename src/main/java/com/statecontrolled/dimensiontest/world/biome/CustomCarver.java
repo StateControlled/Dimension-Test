@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.CarvingMask;
@@ -32,50 +33,62 @@ public class CustomCarver extends CaveWorldCarver {
      * Objective : reduce randomness to force tunnels and rooms to be rectangular with flat floors.
      **/
     @Override
-    public boolean carve(CarvingContext context, CaveCarverConfiguration configuration, ChunkAccess chunkAccess,
-                         Function<BlockPos, Holder<Biome>> biomeAccessor, RandomSource randomSource,
-                         Aquifer aquifer, ChunkPos chunkPos, CarvingMask carvingMask) {
+    public boolean carve(CarvingContext pContext,
+                         CaveCarverConfiguration pConfig,
+                         ChunkAccess pChunk,
+                         Function<BlockPos, Holder<Biome>> pBiomeAccessor,
+                         RandomSource pRandom,
+                         Aquifer pAquifer,
+                         ChunkPos pChunkPos,
+                         CarvingMask pCarvingMask) {
 
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Test Custom Carver");
-        int i = SectionPos.sectionToBlockCoord(this.getRange() * 2 - 1) + 1;
-        int j = randomSource.nextInt(randomSource.nextInt(randomSource.nextInt(16)) + 1);
+        int i = SectionPos.sectionToBlockCoord(this.getRange() * 2 - 1);
+        int j = pRandom.nextInt(pRandom.nextInt(pRandom.nextInt(this.getCaveBound()) + 1) + 1);
 
-        for(int k = 0; k < j; k++) {
-            double rBlockX = chunkPos.getBlockX(randomSource.nextInt(16));
-            double rBlockY = configuration.y.sample(randomSource, context);
-            double rBlockZ = chunkPos.getBlockZ(randomSource.nextInt(16));
-            double rHoz = configuration.horizontalRadiusMultiplier.sample(randomSource);
-            double rVer = configuration.verticalRadiusMultiplier.sample(randomSource);
-            int d5 = 48;
+        for(int k = 0; k < j; ++k) {
+            double d0 = pChunkPos.getBlockX(pRandom.nextInt(16));
+            double d1 = pConfig.y.sample(pRandom, pContext);
+            double d2 = pChunkPos.getBlockZ(pRandom.nextInt(16));
+            double d3 = pConfig.horizontalRadiusMultiplier.sample(pRandom);
+            double d4 = pConfig.verticalRadiusMultiplier.sample(pRandom);
+            double d5 = UniformFloat.of(-0.1F, 0.1F).sample(pRandom);
+            
+            WorldCarver.CarveSkipChecker worldcarver$carveskipchecker = (p_159202_, p_159203_, p_159204_, p_159205_, p_159206_) ->
+                    shouldSkip(p_159203_, p_159204_, p_159205_, d5);
 
-            WorldCarver.CarveSkipChecker carveskipchecker = (cContext, a, b, c, ign) -> shouldSkip(a, b, c, d5);
-
-            int mLimit = 1;
-            if (randomSource.nextInt(4) == 0) {
-                double rScaleY = configuration.yScale.sample(randomSource) + 1.0;
-                float rRadius = 1.0F + (randomSource.nextFloat() * 8.0F);
-
-                this.createRoom(context, configuration, chunkAccess, biomeAccessor, aquifer,
-                        rBlockX, rBlockY, rBlockZ, rRadius, rScaleY, carvingMask, carveskipchecker
-                );
-
-                mLimit += randomSource.nextInt(4);
+            int l = 1;
+            if (pRandom.nextInt(4) == 0) {
+                double d6 = pConfig.yScale.sample(pRandom);
+                float f1 = 1.0F + pRandom.nextFloat() * 6.0F;
+                this.createRoom(pContext, pConfig, pChunk, pBiomeAccessor, pAquifer, d0, d1, d2, f1, d6, pCarvingMask, worldcarver$carveskipchecker);
+                l += pRandom.nextInt(4);
             }
 
-            int branchIndex = 0;
-            for(int m = 0; m < mLimit; m++) {
-                float yaw       = 0; //randomSource.nextFloat() * ((float) Math.PI * 2.0F);
-                float pitch     = 0; // (randomSource.nextFloat() - 0.5F) / 4.0F;
-                float thickness = randomSource.nextInt(5, 11); //this.getThickness(randomSource);
-                int branchCount = Math.abs(i - randomSource.nextInt(i / 4));
-                long seed       = randomSource.nextLong();
-                double rScaleY  = this.getYScale();
-
+            for(int k1 = 0; k1 < l; ++k1) {
+                float f = pRandom.nextFloat() * (float) (Math.PI * 2);
+                float f3 = (pRandom.nextFloat() - 0.5F) / 4.0F;
+                float f2 = this.getThickness(pRandom);
+                int i1 = i - pRandom.nextInt(i / 4);
                 this.createTunnel(
-                        context, configuration, chunkAccess, biomeAccessor,
-                        seed, aquifer, rBlockX, rBlockY, rBlockZ,
-                        rHoz, rVer, thickness, yaw, pitch, branchIndex, branchCount,
-                        rScaleY, carvingMask, carveskipchecker
+                        pContext,
+                        pConfig,
+                        pChunk,
+                        pBiomeAccessor,
+                        pRandom.nextLong(),
+                        pAquifer,
+                        d0,
+                        d1,
+                        d2,
+                        d3,
+                        d4,
+                        f2,
+                        f,
+                        f3,
+                        0,
+                        i1,
+                        this.getYScale(),
+                        pCarvingMask,
+                        worldcarver$carveskipchecker
                 );
             }
         }
@@ -83,114 +96,186 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     @Override
-    protected void createRoom(CarvingContext context, CaveCarverConfiguration config, ChunkAccess pChunk,
-                              Function<BlockPos, Holder<Biome>> pBiomeAccessor, Aquifer pAquifer,
-                              double x, double y, double z, float radius,
-                              double horizontalVerticalRatio, CarvingMask carvingMask, WorldCarver.CarveSkipChecker skipChecker) {
+    public void createRoom(CarvingContext pContext,
+                              CaveCarverConfiguration pConfig,
+                              ChunkAccess pChunk,
+                              Function<BlockPos, Holder<Biome>> pBiomeAccessor,
+                              Aquifer pAquifer,
+                              double pX,
+                              double pY,
+                              double pZ,
+                              float pRadius,
+                              double pHorizontalVerticalRatio,
+                              CarvingMask pCarvingMask,
+                              WorldCarver.CarveSkipChecker pSkipChecker) {
 
-        double d0 = 1.0 + radius;
-        double d1 = d0 * horizontalVerticalRatio;
-        this.carveCube(context, config, pChunk, pBiomeAccessor, pAquifer, x + 1, y, z + 1, d0, d1, carvingMask, skipChecker);
+        double horizontalRadius = 1.5 + (double) (Mth.sin((float) (Math.PI / 2)) * pRadius);
+        double verticalRadius = horizontalRadius * pHorizontalVerticalRatio;
+        this.carveEllipsoid(pContext, pConfig, pChunk, pBiomeAccessor, pAquifer, pX + 1.0, pY, pZ, horizontalRadius, verticalRadius, pCarvingMask, pSkipChecker);
     }
 
     @Override
-    protected void createTunnel(CarvingContext context, CaveCarverConfiguration config, ChunkAccess chunk,
-                                Function<BlockPos, Holder<Biome>> biomeAccessor, long seed,
-                                Aquifer aquifer, double x, double y, double z,
-                                double horizontalRadiusMultiplier, double verticalRadiusMultiplier,
-                                float thickness, float yaw, float pitch, int branchIndex,
-                                int branchCount, double horizontalVerticalRatio,
-                                CarvingMask carvingMask, WorldCarver.CarveSkipChecker skipChecker) {
+    public void createTunnel(CarvingContext pContext,
+                                CaveCarverConfiguration pConfig,
+                                ChunkAccess pChunk,
+                                Function<BlockPos, Holder<Biome>> pBiomeAccessor,
+                                long pSeed,
+                                Aquifer pAquifer,
+                                double pX,
+                                double pY,
+                                double pZ,
+                                double pHorizontalRadiusMultiplier,
+                                double pVerticalRadiusMultiplier,
+                                float pThickness,
+                                float pYaw,
+                                float pPitch,
+                                int pBranchIndex,
+                                int pBranchCount,
+                                double pHorizontalVerticalRatio,
+                                CarvingMask pCarvingMask,
+                                WorldCarver.CarveSkipChecker pSkipChecker) {
 
-        RandomSource randomsource = RandomSource.create(seed);
-        int i = randomsource.nextInt(branchCount / 2) + (branchCount / 4);
-        float yawAdjust = 0.0F;
+        RandomSource randomsource = RandomSource.create(pSeed);
+        int b = randomsource.nextInt(pBranchCount / 2) + pBranchCount / 4;
+        boolean flag = randomsource.nextInt(6) == 0;
+        float f = 0.0F;
+        float f1 = 0.0F;
 
-        for(int j = branchIndex; j < branchCount; ++j) {
-            double d0 = 1.5 + (double) (Mth.sin((float) (Math.PI * (float) j) / (float) branchCount) * thickness);
-            double d1 = d0 * horizontalVerticalRatio;
-            float h = Mth.cos(pitch);
-
-            x += h;
-            z += h;
-            System.out.println(x + ", " + z);
-            yaw += (yawAdjust * 0.1F);
-            yawAdjust += (randomsource.nextFloat() - randomsource.nextFloat()) * randomsource.nextFloat() * 4.0F;
-
-            if (j == i && thickness > 1.0F) {
-                for (int c = 0; c < 2; c++) {
+        for(int j = pBranchIndex; j < pBranchCount; ++j) {
+            double d0 = 1.5 + (double)(Mth.sin((float) Math.PI * (float)j / (float)pBranchCount) * pThickness);
+            double d1 = d0 * pHorizontalVerticalRatio;
+            float f2 = Mth.cos(pPitch);
+            pX += Mth.cos(pYaw) * f2;
+            pY += Mth.sin(pPitch);
+            pZ += Mth.sin(pYaw) * f2;
+            pPitch *= flag ? 0.92F : 0.7F;
+            pPitch += f1 * 0.1F;
+            pYaw += f * 0.1F;
+            f1 *= 0.9F;
+            f *= 0.75F;
+            f1 += (randomsource.nextFloat() - randomsource.nextFloat()) * randomsource.nextFloat() * 2.0F;
+            f += (randomsource.nextFloat() - randomsource.nextFloat()) * randomsource.nextFloat() * 4.0F;
+            if (j == b && pThickness > 1.0F) {
+                for (int i = 0; i < 2; i++) {
                     this.createTunnel(
-                            context, config, chunk, biomeAccessor, randomsource.nextLong(),
-                            aquifer, x, y, z, horizontalRadiusMultiplier, verticalRadiusMultiplier,
-                            randomsource.nextFloat() * 0.5F + 0.5F, yaw - ((float) Math.PI / 2.0F), pitch / 3.0F, j,
-                            branchCount, 1.0D, carvingMask, skipChecker
+                            pContext,
+                            pConfig,
+                            pChunk,
+                            pBiomeAccessor,
+                            randomsource.nextLong(),
+                            pAquifer,
+                            pX,
+                            pY,
+                            pZ,
+                            pHorizontalRadiusMultiplier,
+                            pVerticalRadiusMultiplier,
+                            randomsource.nextFloat() * 0.5F + 0.5F,
+                            pYaw - (float) (Math.PI / 2),
+                            pPitch / 3.0F,
+                            j,
+                            pBranchCount,
+                            1.0,
+                            pCarvingMask,
+                            pSkipChecker
                     );
                 }
+
                 return;
             }
 
             if (randomsource.nextInt(4) != 0) {
-                if (!canReach(chunk.getPos(), x, z, j, branchCount, thickness)) {
+                if (!canReach(pChunk.getPos(), pX, pZ, j, pBranchCount, pThickness)) {
                     return;
                 }
 
-                this.carveCube(
-                        context, config, chunk,
-                        biomeAccessor, aquifer,
-                        x, y, z,
-                        d0 * horizontalRadiusMultiplier,
-                        d1 * verticalRadiusMultiplier,
-                        carvingMask, skipChecker
+                this.carveEllipsoid(
+                        pContext,
+                        pConfig,
+                        pChunk,
+                        pBiomeAccessor,
+                        pAquifer,
+                        pX,
+                        pY,
+                        pZ,
+                        d0 * pHorizontalRadiusMultiplier,
+                        d1 * pVerticalRadiusMultiplier,
+                        pCarvingMask,
+                        pSkipChecker
                 );
             }
         }
-
     }
 
     /**
-     * I think this will carve a rectangular room
+     * Reconfigure to carve squares
      **/
-    private void carveCube(CarvingContext context, CaveCarverConfiguration config, ChunkAccess chunk,
-                           Function<BlockPos, Holder<Biome>> biomeAccessor, Aquifer aquifer,
-                           double x, double y, double z, double horizontalRadius,
-                           double verticalRadius, CarvingMask carvingMask, WorldCarver.CarveSkipChecker skipChecker) {
+    @Override
+    public boolean carveEllipsoid(CarvingContext pContext,
+                                  CaveCarverConfiguration pConfig,
+                                  ChunkAccess pChunk,
+                                  Function<BlockPos, Holder<Biome>> pBiomeAccessor,
+                                  Aquifer pAquifer,
+                                  double pX,
+                                  double pY,
+                                  double pZ,
+                                  double pHorizontalRadius,
+                                  double pVerticalRadius,
+                                  CarvingMask pCarvingMask,
+                                  WorldCarver.CarveSkipChecker pSkipChecker) {
 
-        ChunkPos chunkpos = chunk.getPos();
-        double middleX = chunkpos.getMiddleBlockX();
-        double middleZ = chunkpos.getMiddleBlockZ();
-        double hRadiusUp = 16 + (horizontalRadius * 2);
+        ChunkPos chunkpos = pChunk.getPos();
+        double d0 = chunkpos.getMiddleBlockX();
+        double d1 = chunkpos.getMiddleBlockZ();
+        double d2 = 16.0 + pHorizontalRadius * 2.0;
+        if (!(Math.abs(pX - d0) > d2) && !(Math.abs(pZ - d1) > d2)) {
+            int i = chunkpos.getMinBlockX();
+            int j = chunkpos.getMinBlockZ();
+            int k = Math.max(Mth.floor(pX - pHorizontalRadius) - i - 1, 0);
+            int l = Math.min(Mth.floor(pX + pHorizontalRadius) - i, 15);
+            int i1 = Math.max(Mth.floor(pY - pVerticalRadius) - 1, pContext.getMinGenY() + 1);
+            int j1 = pChunk.isUpgrading() ? 0 : 7;
+            int k1 = Math.min(Mth.floor(pY + pVerticalRadius) + 1, pContext.getMinGenY() + pContext.getGenDepth() - 1 - j1);
+            int l1 = Math.max(Mth.floor(pZ - pHorizontalRadius) - j - 1, 0);
+            int i2 = Math.min(Mth.floor(pZ + pHorizontalRadius) - j, 15);
+            boolean flag = false;
+            BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+            BlockPos.MutableBlockPos blockpos$mutableblockpos1 = new BlockPos.MutableBlockPos();
 
-        if (!(Math.abs(x - middleX) > hRadiusUp) && !(Math.abs(z - middleZ) > hRadiusUp)) {
-            int minX = chunkpos.getMinBlockX();
-            int minZ = chunkpos.getMinBlockZ();
+            for(int j2 = k; j2 <= l; ++j2) {
+                int k2 = chunkpos.getBlockX(j2);
+                double d3 = ((double)k2 + 0.5 - pX) / pHorizontalRadius;
 
-            int xHorizMin = Math.max(Mth.floor(x - horizontalRadius) - minX - 1, 0);
-            int xHorizMax = Math.min(Mth.floor(x + horizontalRadius) - minX, 15);
+                for(int l2 = l1; l2 <= i2; ++l2) {
+                    int i3 = chunkpos.getBlockZ(l2);
+                    double d4 = ((double)i3 + 0.5 - pZ) / pHorizontalRadius;
+                    if (!(d3 * d3 + d4 * d4 >= 1.0)) {
+                        MutableBoolean mutableboolean = new MutableBoolean(false);
 
-            int yMinFloor = Math.max(Mth.floor(y - verticalRadius) - 2, context.getMinGenY() + 1);
-            int yMaxFloor = Math.min(Mth.floor(y + verticalRadius) + 2, context.getMinGenY() + context.getGenDepth() - 8);
-
-            int zHorizMin = Math.max(Mth.floor(z - horizontalRadius) - minZ - 1, 0);
-            int zHorizMax = Math.min(Mth.floor(z + horizontalRadius) - minZ, 15);
-
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-            BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-
-            for(int a = xHorizMin; a < xHorizMax + 1; a++) {
-                int blockX = chunkpos.getBlockX(a);
-
-                for(int b = zHorizMin; b < zHorizMax + 1; b++) {
-                    int blockZ = chunkpos.getBlockZ(b);
-
-                    MutableBoolean mutableboolean = new MutableBoolean(true); // do i need this?
-
-                    for(int c = yMaxFloor; c > yMinFloor; c--) {
-                        carvingMask.set(a, c, b);
-                        pos.set(blockX, c, blockZ);
-                        this.carveBlock(context, config, chunk, biomeAccessor, carvingMask, pos, checkPos, aquifer, mutableboolean);
+                        for(int j3 = k1; j3 > i1; --j3) {
+                            double d5 = ((double)j3 - 0.5 - pY) / pVerticalRadius;
+                            if (!pSkipChecker.shouldSkip(pContext, d3, d5, d4, j3) && (!pCarvingMask.get(j2, j3, l2))) {
+                                pCarvingMask.set(j2, j3, l2);
+                                blockpos$mutableblockpos.set(k2, j3, i3);
+                                flag |= this.carveBlock(
+                                        pContext,
+                                        pConfig,
+                                        pChunk,
+                                        pBiomeAccessor,
+                                        pCarvingMask,
+                                        blockpos$mutableblockpos,
+                                        blockpos$mutableblockpos1,
+                                        pAquifer,
+                                        mutableboolean
+                                );
+                            }
+                        }
                     }
                 }
             }
+
+            return flag;
+        } else {
+            return false;
         }
     }
 

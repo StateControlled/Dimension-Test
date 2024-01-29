@@ -46,7 +46,7 @@ public class ThreadModulatorTeleporter implements ITeleporter {
             serverPlayer.teleportTo(playerSpawnPosition.x + 0.5, playerSpawnPosition.y + 1, playerSpawnPosition.z + 0.5);
             return e;
         } catch (Exception e) {
-            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "Failed to player entity! " + e.getMessage(), e);
+            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "Failed to place player entity! " + e.getMessage(), e);
             return entity;
         }
     }

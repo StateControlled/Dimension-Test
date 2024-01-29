@@ -43,7 +43,7 @@ public class DimensionTest {
 
         ModCreativeModeTab.register(modEventBus);
 
-        ModCarvers.registerCarvers();
+        ModCarvers.register(modEventBus);
 
     }
 

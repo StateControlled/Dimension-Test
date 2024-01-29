@@ -27,7 +27,7 @@ public class ModConfiguredCarvers {
     public static void bootstrap(BootstapContext<ConfiguredWorldCarver<?>> context) {
         HolderGetter<Block> blockGetter = context.lookup(Registries.BLOCK);
         context.register(CUSTOM_CARVER_KEY,
-            ModCarvers.CUSTOM_CARVER.configured(
+            ModCarvers.CUSTOM_CARVER.get().configured(
                 new CaveCarverConfiguration(
                     0.95F,                          // probability
                     UniformHeight.of(VerticalAnchor.aboveBottom(8), VerticalAnchor.absolute(200)),      // y

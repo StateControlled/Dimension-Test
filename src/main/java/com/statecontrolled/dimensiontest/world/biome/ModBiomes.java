@@ -3,7 +3,6 @@ package com.statecontrolled.dimensiontest.world.biome;
 import com.statecontrolled.dimensiontest.DimensionTest;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +40,9 @@ public class ModBiomes {
         context.register(BIOME_THREE, initBiomeThree(context));
     }
 
+    /**
+     * Setup for Biome_One
+     */
     public static Biome initBiomeOne(BootstapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome One");
 
@@ -50,11 +52,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome One");
-//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CUSTOM_CARVER.getKey());
         biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
-
-        globalGenerationFeatures(biomeBuilder);
+        //biomeBuilder.addFeature()
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
@@ -71,6 +70,9 @@ public class ModBiomes {
                 ).build();
     }
 
+    /**
+     * Setup for Biome_Two
+     */
     public static Biome initBiomeTwo(BootstapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Two");
 
@@ -80,15 +82,12 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Two");
-//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
-
-        globalGenerationFeatures(biomeBuilder);
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
                 .downfall(0.8f)
-                .temperature(0.95f)
+                .temperature(0.85f)
                 .generationSettings(biomeBuilder.build())
                 .mobSpawnSettings(mobSpawnBuilder.build())
                 .specialEffects((new BiomeSpecialEffects.Builder())
@@ -100,6 +99,9 @@ public class ModBiomes {
                 ).build();
     }
 
+    /**
+     * Setup for Biome_Three
+     */
     public static Biome initBiomeThree(BootstapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Three");
 
@@ -109,15 +111,12 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Add Custom Carver to Biome Three");
-//        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModCarvers.CARVER_KEY);
-
-        globalGenerationFeatures(biomeBuilder);
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
                 .downfall(0.8f)
-                .temperature(0.75f)
+                .temperature(0.95f)
                 .generationSettings(biomeBuilder.build())
                 .mobSpawnSettings(mobSpawnBuilder.build())
                 .specialEffects((new BiomeSpecialEffects.Builder())
@@ -127,15 +126,6 @@ public class ModBiomes {
                         .fogColor(0xf8f7f9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
-    }
-
-    private static void globalGenerationFeatures(BiomeGenerationSettings.Builder builder) {
-        //BiomeDefaultFeatures.addDefaultCarversAndLakes(builder);
-        //BiomeDefaultFeatures.addDefaultCrystalFormations(builder);
-        BiomeDefaultFeatures.addDefaultMonsterRoom(builder);
-        BiomeDefaultFeatures.addDefaultUndergroundVariety(builder);
-        BiomeDefaultFeatures.addDefaultSprings(builder);
-        //BiomeDefaultFeatures.addSurfaceFreezing(builder);
     }
 
 }

@@ -21,9 +21,9 @@ import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
-public class CustomCarver extends CaveWorldCarver {
+public class CustomCaveCarver extends CaveWorldCarver {
 
-    public CustomCarver(Codec<CaveCarverConfiguration> codec) {
+    public CustomCaveCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
     }
 
@@ -40,24 +40,24 @@ public class CustomCarver extends CaveWorldCarver {
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
 
-        int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
+        int j = random.nextInt(16);
 
-        for(int i = 0; i < iBound; i++) {
-            double x = chunkPos.getBlockX(random.nextInt(16));
-            double y = configuration.y.sample(random, context);
-            double z = chunkPos.getBlockZ(random.nextInt(16));
+        for(int k = 0; k < j; k++) {
+            double blockX = chunkPos.getBlockX(random.nextInt(16));
+            double blockY = configuration.y.sample(random, context);
+            double blockZ = chunkPos.getBlockZ(random.nextInt(16));
 
-            double horizontalRadiusMul  = 1.5;
-            double verticalRadiusMul    = 1.5;
-            double check = 0.5; // UniformFloat.of(-0.1F, 0.1F).sample(random);
+            double horizontalRadiusMul = 2.0; // configuration.horizontalRadiusMultiplier.sample(random);
+            double verticalRadiusMul = 2.0; // configuration.verticalRadiusMultiplier.sample(random);
+            double d5 = UniformFloat.of(-0.1F, 0.1F).sample(random);
 
-            WorldCarver.CarveSkipChecker carveSkipChecker =
-                (carvingContext, relativeX, relativeY, relativeZ, u) -> skipCheck(relativeX, relativeY, relativeZ, check);
+            WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, relativeX, relativeY, relativeZ, p_159206_) ->
+                    skipCheck(relativeX, relativeY, relativeZ, d5);
 
-            int jBound = 1;
+            int l = 1;
             if (random.nextInt(4) == 0) {
                 double horizontalVerticalRatio = configuration.yScale.sample(random);
-                float radius = 1.0F + (random.nextFloat() * 7.0F);
+                float radius = 1.0F + random.nextFloat() * 6.0F;
 
                 this.createRoom(
                         context,
@@ -65,44 +65,44 @@ public class CustomCarver extends CaveWorldCarver {
                         chunkAccess,
                         biomeAccessor,
                         aquifer,
-                        x,
-                        y,
-                        z,
+                        blockX,
+                        blockY,
+                        blockZ,
                         radius,
                         horizontalVerticalRatio,
                         carvingMask,
                         carveSkipChecker
                 );
 
-                jBound += random.nextInt(4);
+                l += random.nextInt(4);
             }
 
-            for(int j = 0; j < jBound; j++) {
-                float yaw       = (float) weightedRandomNumber(random, -1.0, 1.0, 0.0, 0.6) / 8;
-                float pitch     = (float) weightedRandomNumber(random, -1.0, 1.0, 0.0, 0.6) / 8;
-                float thickness = 2.0F;
-                int branchCount = 112 - random.nextInt(32);
+            for(int k1 = 0; k1 < l; k1++) {
+                float yaw       = (float) weightedRandomNumber(random) / 8; // random.nextFloat() * (float) (Math.PI * 2);
+                float pitch     = (float) weightedRandomNumber(random) / 8; // (random.nextFloat() - 0.5F) / 4.0F; // -0.125, 0.125
+                float thickness = 2.0F; // this.getThickness(random);
+                int branchCount = 112 - random.nextInt(32); // i - random.nextInt(i / 4);
 
                 this.createTunnel(
-                    context,
-                    configuration,
-                    chunkAccess,
-                    biomeAccessor,
-                    random.nextLong(),  // seed
-                    aquifer,
-                    x,
-                    y,
-                    z,
-                    horizontalRadiusMul,
-                    verticalRadiusMul,
-                    thickness,
-                    yaw,
-                    pitch,
-                    0,                  // branchIndex
-                    branchCount,        // branchCount
-                    this.getYScale(),   // horizontalVerticalRatio
-                    carvingMask,
-                    carveSkipChecker
+                        context,
+                        configuration,
+                        chunkAccess,
+                        biomeAccessor,
+                        random.nextLong(),  // seed
+                        aquifer,
+                        blockX,
+                        blockY,
+                        blockZ,
+                        horizontalRadiusMul,
+                        verticalRadiusMul,
+                        thickness,
+                        yaw,
+                        pitch,
+                        0,                  // branchIndex
+                        branchCount,        // branchCount
+                        this.getYScale(),   // horizontalVerticalRatio
+                        carvingMask,
+                        carveSkipChecker
                 );
             }
         }
@@ -110,79 +110,68 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     /**
-     * Generate a random number between a given minimum and maximum and return a number biased towards a given preferred number.
-     * The bias does not affect the randomly generated number, rather, it is a bias towards returning the preferred number.
-     * @param min   the minimum bound
-     * @param max   the maximum bound
-     * @param preferred the number to favor
-     * @param biasProbability   the probability that the preferred number will be returned
-     * @return  A randomly generated double that is biased towards a given number.
+     * Return a random number between -1 and 1 biased towards zero
      **/
-    private double weightedRandomNumber(RandomSource random, double min, double max, double preferred, double biasProbability) {
-        double randomNumber = min + (max - min) * random.nextDouble();
-        double chance = random.nextDouble();
-
-        if (chance < biasProbability) {
-            return preferred;
-        } else {
-            return randomNumber;
-        }
+    private double weightedRandomNumber(RandomSource random) {
+        double bias = 0.75;
+        double gaussian = random.nextGaussian() * bias;
+        return Math.max(-1.0, Math.min(1.0, gaussian));
     }
 
     @Override
     public void createRoom(CarvingContext context,
-                            CaveCarverConfiguration configuration,
-                            ChunkAccess chunkAccess,
-                            Function<BlockPos, Holder<Biome>> biomeAccessor,
-                            Aquifer aquifer,
-                            double x,
-                            double y,
-                            double z,
-                            float radius,
-                            double horizontalVerticalRatio,
-                            CarvingMask carvingMask,
-                            WorldCarver.CarveSkipChecker skipChecker) {
+                           CaveCarverConfiguration configuration,
+                           ChunkAccess chunkAccess,
+                           Function<BlockPos, Holder<Biome>> biomeAccessor,
+                           Aquifer aquifer,
+                           double x,
+                           double y,
+                           double z,
+                           float radius,
+                           double horizontalVerticalRatio,
+                           CarvingMask carvingMask,
+                           WorldCarver.CarveSkipChecker skipChecker) {
 
         double horizontalRadius = 1.5 * radius;
         double verticalRadius = horizontalRadius * horizontalVerticalRatio;
 
         this.carveEllipsoid(
-            context,
-            configuration,
-            chunkAccess,
-            biomeAccessor,
-            aquifer,
-            x,
-            y,
-            z,
-            horizontalRadius,
-            verticalRadius,
-            carvingMask,
-            skipChecker
+                context,
+                configuration,
+                chunkAccess,
+                biomeAccessor,
+                aquifer,
+                x,
+                y,
+                z,
+                horizontalRadius,
+                verticalRadius,
+                carvingMask,
+                skipChecker
         );
 
     }
 
     @Override
     public void createTunnel(CarvingContext context,
-                                CaveCarverConfiguration configuration,
-                                ChunkAccess chunkAccess,
-                                Function<BlockPos, Holder<Biome>> biomeAccessor,
-                                long seed,
-                                Aquifer aquifer,
-                                double x,
-                                double y,
-                                double z,
-                                double horizontalRadiusMultiplier,
-                                double verticalRadiusMultiplier,
-                                float thickness,
-                                float yaw,
-                                float pitch,
-                                int branchIndex,
-                                int branchCount,
-                                double horizontalVerticalRatio,
-                                CarvingMask carvingMask,
-                                WorldCarver.CarveSkipChecker skipChecker) {
+                             CaveCarverConfiguration configuration,
+                             ChunkAccess chunkAccess,
+                             Function<BlockPos, Holder<Biome>> biomeAccessor,
+                             long seed,
+                             Aquifer aquifer,
+                             double x,
+                             double y,
+                             double z,
+                             double horizontalRadiusMultiplier,
+                             double verticalRadiusMultiplier,
+                             float thickness,
+                             float yaw,
+                             float pitch,
+                             int branchIndex,
+                             int branchCount,
+                             double horizontalVerticalRatio,
+                             CarvingMask carvingMask,
+                             WorldCarver.CarveSkipChecker skipChecker) {
 
         RandomSource randomSource = RandomSource.create(seed);
         int rBranchCountTest = randomSource.nextInt(branchCount / 2) + branchCount / 4;
@@ -304,27 +293,27 @@ public class CustomCarver extends CaveWorldCarver {
                     double relZ = ((double) posZ + 0.5 - z) / horizontalRadius;
 
                     //if (!(relX * relX + relZ * relZ >= 1.0)) {
-                        MutableBoolean surfaceCheck = new MutableBoolean(false);
+                    MutableBoolean surfaceCheck = new MutableBoolean(false);
 
-                        for(int maskY = k1; maskY > i1; maskY--) {
-                            double relY = ((double) maskY - 0.5 - y) / verticalRadius;
+                    for(int maskY = k1; maskY > i1; maskY--) {
+                        double relY = ((double) maskY - 0.5 - y) / verticalRadius;
 
-                            //if (!skipChecker.shouldSkip(context, relX, relY, relZ, maskY) && (!carvingMask.get(maskX, maskY, maskZ))) {
-                                carvingMask.set(maskX, maskY, maskZ);
-                                position.set(posX, maskY, posZ);
-                                flag |= this.carveBlock(
-                                        context,
-                                        configuration,
-                                        chunkAccess,
-                                        biomeAccessor,
-                                        carvingMask,
-                                        position,
-                                        checkPosition,
-                                        aquifer,
-                                        surfaceCheck
-                                );
-                            //}
-                        }
+                        //if (!skipChecker.shouldSkip(context, relX, relY, relZ, maskY) && (!carvingMask.get(maskX, maskY, maskZ))) {
+                        carvingMask.set(maskX, maskY, maskZ);
+                        position.set(posX, maskY, posZ);
+                        flag |= this.carveBlock(
+                                context,
+                                configuration,
+                                chunkAccess,
+                                biomeAccessor,
+                                carvingMask,
+                                position,
+                                checkPosition,
+                                aquifer,
+                                surfaceCheck
+                        );
+                        //}
+                    }
                     //}
                 }
             }
@@ -340,11 +329,6 @@ public class CustomCarver extends CaveWorldCarver {
         } else {
             return (relativeX * relativeX) + (relativeY * relativeY) + (relativeZ * relativeZ) >= 1.0;
         }
-    }
-
-    @Override
-    public double getYScale() {
-        return 1.0;
     }
 
 }

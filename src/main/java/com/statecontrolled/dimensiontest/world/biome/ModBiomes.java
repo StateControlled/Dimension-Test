@@ -53,12 +53,11 @@ public class ModBiomes {
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
         biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
-        //biomeBuilder.addFeature()
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
-                .downfall(0.8f)
-                .temperature(0.75f)
+                .downfall(0.5f)
+                .temperature(0.80f)
                 .generationSettings(biomeBuilder.build())
                 .mobSpawnSettings(mobSpawnBuilder.build())
                 .specialEffects((new BiomeSpecialEffects.Builder())
@@ -86,7 +85,7 @@ public class ModBiomes {
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
-                .downfall(0.8f)
+                .downfall(0.5f)
                 .temperature(0.85f)
                 .generationSettings(biomeBuilder.build())
                 .mobSpawnSettings(mobSpawnBuilder.build())
@@ -115,8 +114,8 @@ public class ModBiomes {
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
-                .downfall(0.8f)
-                .temperature(0.95f)
+                .downfall(0.5f)
+                .temperature(0.90f)
                 .generationSettings(biomeBuilder.build())
                 .mobSpawnSettings(mobSpawnBuilder.build())
                 .specialEffects((new BiomeSpecialEffects.Builder())

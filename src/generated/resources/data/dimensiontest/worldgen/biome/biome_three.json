@@ -1,6 +1,8 @@
 {
-  "carvers": {},
-  "downfall": 0.8,
+  "carvers": {
+    "air": "dimensiontest:custom_carver"
+  },
+  "downfall": 0.5,
   "effects": {
     "fog_color": 16316409,
     "mood_sound": {
@@ -13,36 +15,7 @@
     "water_color": 13235608,
     "water_fog_color": 14286751
   },
-  "features": [
-    [],
-    [],
-    [],
-    [
-      "minecraft:monster_room",
-      "minecraft:monster_room_deep"
-    ],
-    [],
-    [],
-    [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff"
-    ],
-    [],
-    [
-      "minecraft:spring_water",
-      "minecraft:spring_lava"
-    ],
-    [
-      "minecraft:glow_lichen"
-    ]
-  ],
+  "features": [],
   "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {
@@ -62,5 +35,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.75
+  "temperature": 0.9
 }

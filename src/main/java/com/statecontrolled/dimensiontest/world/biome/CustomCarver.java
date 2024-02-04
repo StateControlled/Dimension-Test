@@ -1,41 +1,30 @@
 package com.statecontrolled.dimensiontest.world.biome;
 
-import java.awt.Dimension;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.mojang.serialization.Codec;
-import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 public class CustomCarver extends CaveWorldCarver {
 
-    public CustomCarver(Codec<CaveCarverConfiguration> pCodec) {
-        super(pCodec);
+    public CustomCarver(Codec<CaveCarverConfiguration> codec) {
+        super(codec);
     }
 
     /**
@@ -51,38 +40,15 @@ public class CustomCarver extends CaveWorldCarver {
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
 
-//        try (ServerLevel serverLevel = chunkAccess.getWorldForge().getServer().getLevel(TestDimension.M_LEVEL_KEY)) {
-//            DimensionTest.LOGGER.log(Level.INFO, "Try structure position in level : " + serverLevel.toString());
-//
-//            if (chunkAccess.getStatus() != ChunkStatus.EMPTY) {
-//                StructureTemplate template = serverLevel.getStructureManager().getOrCreate(new ResourceLocation(DimensionTest.MOD_ID, "corridor_cross"));
-//                if (template != null) {
-//                    DimensionTest.LOGGER.log(Level.INFO, "Structure : " + template.toString());
-//                }
-//                template.placeInWorld(
-//                        serverLevel,
-//                        BlockPos.ZERO,
-//                        new BlockPos(chunkPos.getBlockX(0), 68, chunkPos.getBlockZ(0)),
-//                        new StructurePlaceSettings().setRotation(Rotation.NONE).setMirror(Mirror.NONE).setIgnoreEntities(false),
-//                        serverLevel.random,
-//                        3
-//                );
-//            }
-//        } catch (Exception e) {
-//            DimensionTest.LOGGER.log(Level.WARNING, "Failed to place structure : " + e.getMessage(), e);
-//            return false;
-//        }
-//
-        //int i = 112;
-        int j = random.nextInt(random.nextInt(random.nextInt(this.getCaveBound()) + 1) + 1);
+        int j = random.nextInt(16);
 
         for(int k = 0; k < j; k++) {
             double blockX = chunkPos.getBlockX(random.nextInt(16));
             double blockY = configuration.y.sample(random, context);
             double blockZ = chunkPos.getBlockZ(random.nextInt(16));
 
-            double horizontalRadiusMul = configuration.horizontalRadiusMultiplier.sample(random);
-            double verticalRadiusMul = configuration.verticalRadiusMultiplier.sample(random);
+            double horizontalRadiusMul = 2.0; // configuration.horizontalRadiusMultiplier.sample(random);
+            double verticalRadiusMul = 2.0; // configuration.verticalRadiusMultiplier.sample(random);
             double d5 = UniformFloat.of(-0.1F, 0.1F).sample(random);
 
             WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, relativeX, relativeY, relativeZ, p_159206_) ->
@@ -92,36 +58,51 @@ public class CustomCarver extends CaveWorldCarver {
             if (random.nextInt(4) == 0) {
                 double horizontalVerticalRatio = configuration.yScale.sample(random);
                 float radius = 1.0F + random.nextFloat() * 6.0F;
-                this.createRoom(context, configuration, chunkAccess, biomeAccessor, aquifer, blockX, blockY, blockZ, radius, horizontalVerticalRatio, carvingMask, carveSkipChecker);
-                l += random.nextInt(4);
-            }
 
-            for(int k1 = 0; k1 < l; k1++) {
-                float yaw       = random.nextFloat() * (float) (Math.PI * 2);
-                float pitch     = (float) weightedRandomNumber(random) / 8; // (random.nextFloat() - 0.5F) / 4.0F; // -0.125, 0.125
-                float thickness = 2.5F; // this.getThickness(random);
-                int branchCount = 112 - random.nextInt(28); // i - random.nextInt(i / 4);
-
-                this.createTunnel(
+                this.createRoom(
                         context,
                         configuration,
                         chunkAccess,
                         biomeAccessor,
-                        random.nextLong(),  // seed
                         aquifer,
                         blockX,
                         blockY,
                         blockZ,
-                        horizontalRadiusMul,
-                        verticalRadiusMul,
-                        thickness,
-                        yaw,
-                        pitch,
-                        0,                  // branchIndex
-                        branchCount,        // branchCount
-                        this.getYScale(),   // horizontalVerticalRatio
+                        radius,
+                        horizontalVerticalRatio,
                         carvingMask,
                         carveSkipChecker
+                );
+
+                l += random.nextInt(4);
+            }
+
+            for(int k1 = 0; k1 < l; k1++) {
+                float yaw       = (float) weightedRandomNumber(random) / 8; // random.nextFloat() * (float) (Math.PI * 2);
+                float pitch     = (float) weightedRandomNumber(random) / 8; // (random.nextFloat() - 0.5F) / 4.0F; // -0.125, 0.125
+                float thickness = 2.0F; // this.getThickness(random);
+                int branchCount = 112 - random.nextInt(32); // i - random.nextInt(i / 4);
+
+                this.createTunnel(
+                    context,
+                    configuration,
+                    chunkAccess,
+                    biomeAccessor,
+                    random.nextLong(),  // seed
+                    aquifer,
+                    blockX,
+                    blockY,
+                    blockZ,
+                    horizontalRadiusMul,
+                    verticalRadiusMul,
+                    thickness,
+                    yaw,
+                    pitch,
+                    0,                  // branchIndex
+                    branchCount,        // branchCount
+                    this.getYScale(),   // horizontalVerticalRatio
+                    carvingMask,
+                    carveSkipChecker
                 );
             }
         }
@@ -132,28 +113,43 @@ public class CustomCarver extends CaveWorldCarver {
      * Return a random number between -1 and 1 biased towards zero
      **/
     private double weightedRandomNumber(RandomSource random) {
-        double bias = 0.65;
+        double bias = 0.75;
         double gaussian = random.nextGaussian() * bias;
         return Math.max(-1.0, Math.min(1.0, gaussian));
     }
 
     @Override
     public void createRoom(CarvingContext context,
-                              CaveCarverConfiguration configuration,
-                              ChunkAccess chunkAccess,
-                              Function<BlockPos, Holder<Biome>> biomeAccessor,
-                              Aquifer aquifer,
-                              double x,
-                              double y,
-                              double z,
-                              float radius,
-                              double horizontalVerticalRatio,
-                              CarvingMask carvingMask,
-                              WorldCarver.CarveSkipChecker skipChecker) {
+                            CaveCarverConfiguration configuration,
+                            ChunkAccess chunkAccess,
+                            Function<BlockPos, Holder<Biome>> biomeAccessor,
+                            Aquifer aquifer,
+                            double x,
+                            double y,
+                            double z,
+                            float radius,
+                            double horizontalVerticalRatio,
+                            CarvingMask carvingMask,
+                            WorldCarver.CarveSkipChecker skipChecker) {
 
-        double horizontalRadius = 1.5 + (double) (Mth.sin((float) (Math.PI / 2)) * radius);
+        double horizontalRadius = 1.5 * radius;
         double verticalRadius = horizontalRadius * horizontalVerticalRatio;
-        this.carveEllipsoid(context, configuration, chunkAccess, biomeAccessor, aquifer, x + 1.0, y, z, horizontalRadius, verticalRadius, carvingMask, skipChecker);
+
+        this.carveEllipsoid(
+            context,
+            configuration,
+            chunkAccess,
+            biomeAccessor,
+            aquifer,
+            x,
+            y,
+            z,
+            horizontalRadius,
+            verticalRadius,
+            carvingMask,
+            skipChecker
+        );
+
     }
 
     @Override
@@ -240,8 +236,8 @@ public class CustomCarver extends CaveWorldCarver {
                         x,
                         y,
                         z,
-                        d0 * horizontalRadiusMultiplier,
-                        d1 * verticalRadiusMultiplier,
+                        horizontalRadiusMultiplier, // d0 * horizontalRadiusMultiplier,
+                        verticalRadiusMultiplier,   // d1 * verticalRadiusMultiplier,
                         carvingMask,
                         skipChecker
                 );
@@ -302,7 +298,7 @@ public class CustomCarver extends CaveWorldCarver {
                         for(int maskY = k1; maskY > i1; maskY--) {
                             double relY = ((double) maskY - 0.5 - y) / verticalRadius;
 
-                            if (!skipChecker.shouldSkip(context, relX, relY, relZ, maskY) && (!carvingMask.get(maskX, maskY, maskZ))) {
+                            //if (!skipChecker.shouldSkip(context, relX, relY, relZ, maskY) && (!carvingMask.get(maskX, maskY, maskZ))) {
                                 carvingMask.set(maskX, maskY, maskZ);
                                 position.set(posX, maskY, posZ);
                                 flag |= this.carveBlock(
@@ -316,7 +312,7 @@ public class CustomCarver extends CaveWorldCarver {
                                         aquifer,
                                         surfaceCheck
                                 );
-                            }
+                            //}
                         }
                     //}
                 }
@@ -336,3 +332,25 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
 }
+
+//        try (ServerLevel serverLevel = chunkAccess.getWorldForge().getServer().getLevel(TestDimension.M_LEVEL_KEY)) {
+//            DimensionTest.LOGGER.log(Level.INFO, "Try structure position in level : " + serverLevel.toString());
+//
+//            if (chunkAccess.getStatus() != ChunkStatus.EMPTY) {
+//                StructureTemplate template = serverLevel.getStructureManager().getOrCreate(new ResourceLocation(DimensionTest.MOD_ID, "corridor_cross"));
+//                if (template != null) {
+//                    DimensionTest.LOGGER.log(Level.INFO, "Structure : " + template.toString());
+//                }
+//                template.placeInWorld(
+//                        serverLevel,
+//                        BlockPos.ZERO,
+//                        new BlockPos(chunkPos.getBlockX(0), 68, chunkPos.getBlockZ(0)),
+//                        new StructurePlaceSettings().setRotation(Rotation.NONE).setMirror(Mirror.NONE).setIgnoreEntities(false),
+//                        serverLevel.random,
+//                        3
+//                );
+//            }
+//        } catch (Exception e) {
+//            DimensionTest.LOGGER.log(Level.WARNING, "Failed to place structure : " + e.getMessage(), e);
+//            return false;
+//        }

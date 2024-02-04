@@ -25,10 +25,10 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
 public class TestDimension {
-    public static final ResourceKey<LevelStem> M_LEVEL_STEM = ResourceKey.create(Registries.LEVEL_STEM,
+    public static final ResourceKey<LevelStem> M_LEVEL_STEM          = ResourceKey.create(Registries.LEVEL_STEM,
             new ResourceLocation(DimensionTest.MOD_ID, "m_dimension"));
 
-    public static final ResourceKey<Level>          M_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
+    public static final ResourceKey<Level> M_LEVEL_KEY               = ResourceKey.create(Registries.DIMENSION,
             new ResourceLocation(DimensionTest.MOD_ID, "m_dimension"));
 
     public static final ResourceKey<DimensionType>  M_DIMENSION_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
@@ -60,14 +60,10 @@ public class TestDimension {
     }
 
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
-        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init LevelStem");
-
         HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
         HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
 
         //HolderGetter<PlacedFeature> features = context.lookup(Registries.PLACED_FEATURE);
-
-        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Setup layers");
 
         //List<FlatLayerInfo> layerInfo = getFlatLayerInfo();
 
@@ -76,8 +72,6 @@ public class TestDimension {
 //                ModStructures.CORRIDOR_EW,
 //                ModStructures.CORRIDOR_NS
 //        );
-
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Structures");
 
         // STRUCTURES
 //        HolderGetter<StructureSet> structures = context.lookup(Registries.STRUCTURE_SET);
@@ -102,20 +96,17 @@ public class TestDimension {
 //                List.of()
 //            ).withBiomeAndLayers(layerInfo, Optional.of(direct), biomeSet);
 
-        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Biome Sources");
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
                 new Climate.ParameterList<>(
                         List.of(
-                                Pair.of(Climate.parameters(0.65F, 0.5F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
-                                Pair.of(Climate.parameters(0.85F, 0.7F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
-                                Pair.of(Climate.parameters(0.75F, 0.6F, 0.0F, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
+                                Pair.of(Climate.parameters(0.75F, 0.6F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
+                                Pair.of(Climate.parameters(0.80F, 0.7F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
+                                Pair.of(Climate.parameters(0.85F, 0.8F, 0.0F, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
                         )
                 )
         );
 
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
-
-        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Define Chunk Generator");
 
         // VANILLA FLATLAND GENERATION
 //        FlatLevelSource flatlandChunkGenerator = new FlatLevelSource(settings);
@@ -130,7 +121,7 @@ public class TestDimension {
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH
-        //DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Register Dimension");
+        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Register Dimension");
         context.register(M_LEVEL_STEM, levelStem);
     }
 

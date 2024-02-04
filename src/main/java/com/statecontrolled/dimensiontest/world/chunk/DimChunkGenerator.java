@@ -117,6 +117,7 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
                 }
             }
         }
+
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -143,78 +144,6 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 //        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Read Dimension Type : " + t);
 
     }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-
-//    private void t() {
-//        if (destinationWorld.dimension() == AbandonedUndergroundDimension.ABANDONEDUNDERGROUND_LEVEL) {
-//            LevelChunk chunk = destinationWorld.getChunk(0, 0);
-//            if (chunk.getStatus() != ChunkStatus.EMPTY) {
-//                StructureTemplate spawnStructure = destinationWorld.getStructureManager().getOrCreate(new ResourceLocation(AbandonedUnderground.MOD_ID, "corridor_cross"));
-//                if (spawnStructure != null) {
-//                    spawnStructure.placeInWorld(
-//                            destinationWorld,
-//                            BlockPos.containing(0, 64, 0),
-//                            BlockPos.containing(0, 64, 0),
-//                            new StructurePlaceSettings().setRotation(Rotation.NONE).setMirror(Mirror.NONE).setIgnoreEntities(false),
-//                            destinationWorld.random,
-//                            3
-//                    );
-//                }
-//            }
-//        }
-//    }
-
-    // Use Carver?
-//    @Override
-//    public void applyCarvers(WorldGenRegion level, long seed, RandomState random,
-//                             BiomeManager biomeManager, StructureManager structureManager,
-//                             ChunkAccess chunk, GenerationStep.Carving step) {
-//
-//        BiomeManager biomemanager = biomeManager.withDifferentSource((x, y, z) -> this.biomeSource.getNoiseBiome(x, y, z, random.sampler()));
-//        WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(RandomSupport.generateUniqueSeed()));
-//        int radius = 8;
-//        ChunkPos chunkpos = chunk.getPos();
-//        NoiseChunk noisechunk = chunk.getOrCreateNoiseChunk((p_224250_) -> this.createNoiseChunk(p_224250_, structureManager, Blender.of(level), random));
-//        Aquifer aquifer = noisechunk.aquifer();
-//        CarvingContext carvingcontext =
-//                new CarvingContext(this, level.registryAccess(),
-//                        chunk.getHeightAccessorForGeneration(), noisechunk, random, this.generatorSettings().value().surfaceRule());
-//
-//        CarvingMask carvingmask = ((ProtoChunk) chunk).getOrCreateCarvingMask(step);
-//
-//        for(int j = -radius; j <= radius; ++j) {
-//            for(int k = -radius; k <= radius; ++k) {
-//                ChunkPos chunkpos1 = new ChunkPos(chunkpos.x + j, chunkpos.z + k);
-//                ChunkAccess chunkaccess = level.getChunk(chunkpos1.x, chunkpos1.z);
-//                BiomeGenerationSettings biomegenerationsettings =
-//                    chunkaccess.carverBiome(() -> this.getBiomeGenerationSettings(
-//                            this.biomeSource.getNoiseBiome(QuartPos.fromBlock(chunkpos1.getMinBlockX()),
-//                            0, QuartPos.fromBlock(chunkpos1.getMinBlockZ()), random.sampler())
-//                        )
-//                    );
-//
-//                Iterable<Holder<ConfiguredWorldCarver<?>>> iterable = biomegenerationsettings.getCarvers(step);
-//                int l = 0;
-//
-//                for(Holder<ConfiguredWorldCarver<?>> holder : iterable) {
-//                    ConfiguredWorldCarver<?> configuredworldcarver = holder.value();
-//                    worldgenrandom.setLargeFeatureSeed(seed + (long)l, chunkpos1.x, chunkpos1.z);
-//
-//                    if (configuredworldcarver.isStartChunk(worldgenrandom)) {
-//                        configuredworldcarver.carve(carvingcontext, chunk, biomemanager::getBiome, worldgenrandom, aquifer, chunkpos1, carvingmask);
-//                    }
-//
-//                    ++l;
-//                }
-//            }
-//        }
-//    }
-
-//    private NoiseChunk createNoiseChunk(ChunkAccess pChunk, StructureManager pStructureManager, Blender pBlender, RandomState pRandom) {
-//        return NoiseChunk.forChunk(pChunk, pRandom, Beardifier.forStructuresInChunk(pStructureManager, pChunk.getPos()),
-//            this.generatorSettings().value(), this.globalFluidPicker.get(), pBlender);
-//    }
 
     @Override
     public int getGenDepth() {

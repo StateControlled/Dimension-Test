@@ -145,7 +145,7 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 //                ChunkPos pos = chunk.getPos();
 //                int x = pos.getBlockX(0);
 //                int z = pos.getBlockZ(0);
-//                int y = 60;
+//                int y = 72;
 //
 //                DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Placing structure [" + placeable + "] at (" + x + ", " + y + ", " + z + ")");
 //
@@ -165,7 +165,6 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 //        } catch (Exception e) {
 //            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "An exception has occurred : " + e.getMessage(), e);
 //        }
-
     }
 
     @Override

@@ -107,7 +107,7 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
             if (blockstate != null) {
                 int y = chunk.getMinBuildHeight() + i;
 
-                for(int x = 0; x < 16; ++x) {
+                for(int x = 0; x < 16; ++x) { // 16 is from chunk dimensions : 16 x 16
                     for(int z = 0; z < 16; ++z) {
                         chunk.setBlockState(mutableBlockPos.set(x, y, z), blockstate, false);
                         heightmap0.update(x, y, z, blockstate);
@@ -120,7 +120,6 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
         return CompletableFuture.completedFuture(chunk);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         List<BlockState> list = this.LAYERS;

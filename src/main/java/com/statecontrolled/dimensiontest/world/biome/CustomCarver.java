@@ -191,8 +191,6 @@ public class CustomCarver extends CaveWorldCarver {
         float f1 = 0.0F;
 
         for(int j = branchIndex; j < branchCount; j++) {
-            double d0 = 1.5 + (double) (Mth.sin((float) Math.PI * (float) j / (float) branchCount) * thickness);
-            double d1 = d0 * horizontalVerticalRatio;
             float f2 = Mth.cos(pitch);
             x += Mth.cos(yaw) * f2;
             y += Mth.sin(pitch);

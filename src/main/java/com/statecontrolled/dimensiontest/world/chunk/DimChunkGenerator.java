@@ -52,10 +52,9 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 
     private static Aquifer.FluidPicker createFluidPicker() {
         Aquifer.FluidStatus lavaAquifer = new Aquifer.FluidStatus(-60, Blocks.LAVA.defaultBlockState());
-        int seaLevel = SEA_LEVEL;
-        Aquifer.FluidStatus waterAquifer = new Aquifer.FluidStatus(seaLevel, Blocks.WATER.defaultBlockState());
+        Aquifer.FluidStatus waterAquifer = new Aquifer.FluidStatus(SEA_LEVEL, Blocks.WATER.defaultBlockState());
         //Aquifer.FluidStatus aquifer$fluidstatus2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
-        return (x, y, z) -> y < Math.min(-60, seaLevel) ? lavaAquifer : waterAquifer;
+        return (x, y, z) -> y < Math.min(-60, SEA_LEVEL) ? lavaAquifer : waterAquifer;
     }
 
     private void setLayers() {
@@ -137,11 +136,36 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-//        ChunkPos pos = chunkAccess.getPos();
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Build Surface. ChunkPos : " + pos);
+//        try {
+//            ServerLevel serverLevel = level.getServer().getLevel(TestDimension.M_LEVEL_KEY);
+//            Optional<StructureTemplate> template = serverLevel.getStructureManager().get(new ResourceLocation(DimensionTest.MOD_ID, "corridor_cross"));
 //
-//        DimensionType t = level.dimensionType();
-//        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Read Dimension Type : " + t);
+//            if (template.isPresent()) {
+//                StructureTemplate placeable = template.get();
+//
+//                ChunkPos pos = chunk.getPos();
+//                int x = pos.getBlockX(0);
+//                int z = pos.getBlockZ(0);
+//                int y = 60;
+//
+//                DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Placing structure [" + placeable + "] at (" + x + ", " + y + ", " + z + ")");
+//
+//                placeable.placeInWorld(
+//                        serverLevel,
+//                        BlockPos.ZERO,
+//                        new BlockPos(x, y, z),
+//                        new StructurePlaceSettings().setRotation(Rotation.NONE).setMirror(Mirror.NONE).setIgnoreEntities(false),
+//                        serverLevel.random,
+//                        3
+//                );
+//            } else {
+//                DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Could not find structure at " + template);
+//            }
+//        } catch (NullPointerException e) {
+//            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "Unexpected NULL value : " + e.getMessage(), e);
+//        } catch (Exception e) {
+//            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "An exception has occurred : " + e.getMessage(), e);
+//        }
 
     }
 

@@ -41,6 +41,7 @@ public class CustomCarver extends CaveWorldCarver {
 
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
 
+        // define starting position
         double x = chunkPos.getBlockX(8);
         double y = configuration.y.sample(random, context);
         double z = chunkPos.getBlockZ(8);
@@ -52,8 +53,7 @@ public class CustomCarver extends CaveWorldCarver {
         float thickness = 2.0F;
 
         for(int i = 0; i < iBound; i++) {
-            WorldCarver.CarveSkipChecker carveSkipChecker =
-                (carvingContext, relativeX, relativeY, relativeZ, u) -> skipCheck(relativeX, relativeY, relativeZ, check);
+            WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rX, rY, rZ, check);
 
             int jBound = 1;
 
@@ -300,11 +300,11 @@ public class CustomCarver extends CaveWorldCarver {
         }
     }
 
-    private static boolean skipCheck(double relativeX, double relativeY, double relativeZ, double minRelativeY) {
-        if (relativeY <= minRelativeY) {
+    private static boolean skipCheck(double x, double y, double z, double maxY) {
+        if (y <= maxY) {
             return true;
         } else {
-            return (relativeX * relativeX) + (relativeY * relativeY) + (relativeZ * relativeZ) >= 1.0;
+            return (x * x) + (y * y) + (z * z) >= 1.0;
         }
     }
 

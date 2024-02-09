@@ -1,5 +1,7 @@
 {
-  "carvers": {},
+  "carvers": {
+    "air": "dimensiontest:custom_carver"
+  },
   "downfall": 0.5,
   "effects": {
     "fog_color": 16382199,

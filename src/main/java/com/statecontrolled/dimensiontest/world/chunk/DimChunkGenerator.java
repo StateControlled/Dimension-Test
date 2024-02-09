@@ -2,6 +2,7 @@ package com.statecontrolled.dimensiontest.world.chunk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -10,14 +11,22 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.statecontrolled.dimensiontest.DimensionTest;
+import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -28,6 +37,9 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 public class DimChunkGenerator extends NoiseBasedChunkGenerator {
     public static final Codec<DimChunkGenerator> CODEC =
@@ -147,15 +159,22 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 //                int z = pos.getBlockZ(0);
 //                int y = 72;
 //
+//                BlockPos position = new BlockPos(x, y, z);
+//
 //                DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Placing structure [" + placeable + "] at (" + x + ", " + y + ", " + z + ")");
 //
 //                placeable.placeInWorld(
-//                        serverLevel,
-//                        BlockPos.ZERO,
-//                        new BlockPos(x, y, z),
-//                        new StructurePlaceSettings().setRotation(Rotation.NONE).setMirror(Mirror.NONE).setIgnoreEntities(false),
-//                        serverLevel.random,
-//                        3
+//                    serverLevel,
+//                    new BlockPos(0, 0, 0),
+//                    position,
+//                    new StructurePlaceSettings()
+//                            .setRotation(Rotation.NONE)
+//                            .setMirror(Mirror.NONE)
+//                            .setIgnoreEntities(false)
+//                            .setKeepLiquids(true)
+//                            .setBoundingBox(new BoundingBox(x, y, z, x + 15, y + 15, z + 15)),
+//                    serverLevel.random,
+//                    3
 //                );
 //            } else {
 //                DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Could not find structure at " + template);

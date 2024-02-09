@@ -23,7 +23,7 @@ public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_TWO = register("biome_two");
     public static final ResourceKey<Biome> BIOME_THREE = register("biome_three");
 
-    private static final boolean USE_CUSTOM_CARVER = false;
+    private static final boolean USE_CUSTOM_CARVER = true;
 
     private ModBiomes() {
         ;

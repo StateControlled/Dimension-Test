@@ -33,7 +33,10 @@ public class DimensionTest {
         }
     }
 
-    // NeoForge will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    /**
+     * Main entry point for the Mod
+     * @param modEventBus NeoForge will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+     **/
     public DimensionTest(IEventBus modEventBus) {
         ModBlocks.register(modEventBus);
 

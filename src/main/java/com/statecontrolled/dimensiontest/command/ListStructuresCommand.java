@@ -7,9 +7,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
-import jdk.incubator.vector.VectorOperators;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,12 +21,16 @@ public class ListStructuresCommand {
     }
 
     private int execute(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayer();
         List<ResourceLocation> listOfStructures = listStructures(context);
-        for (ResourceLocation listOfStructure : listOfStructures) {
-            System.out.println(listOfStructure);
+        if (!listOfStructures.isEmpty()) {
+            for (ResourceLocation r : listOfStructures) {
+                context.getSource().sendSuccess(() -> Component.literal("Found structure : " + r.toString()), true);
+            }
+            return 1;
+        } else {
+            context.getSource().sendSuccess(() -> Component.literal("No structures found!"), true);
+            return 0;
         }
-        return 0;
     }
 
     private List<ResourceLocation> listStructures(CommandContext<CommandSourceStack> context) {
@@ -37,7 +41,7 @@ public class ListStructuresCommand {
                 .keySet()
                 .stream()
                 .filter(resourceLocation -> resourceLocation.getNamespace().equals(DimensionTest.MOD_ID))
-                .filter(resourceLocation -> resourceLocation.getPath().startsWith("structures/"))
+                .filter(resourceLocation -> resourceLocation.getPath().startsWith("structures"))
                 .map(resourceLocation -> new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath().replaceAll("^structures/", "").replaceAll(".nbt$", "")))
                 .toList();
     }

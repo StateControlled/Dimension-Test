@@ -57,9 +57,9 @@ public class CustomCarver extends CaveWorldCarver {
 
             int jBound = 1;
 
-            if (random.nextInt(4) == 0) {
+            if (random.nextInt(3) == 0) {
                 double horizontalVerticalRatio = configuration.yScale.sample(random);
-                float radius = 1.0F + (random.nextFloat() * 7.0F);
+                float radius = 1.0F + (random.nextFloat() * 8.0F);
 
                 this.createRoom(
                         context,
@@ -76,14 +76,14 @@ public class CustomCarver extends CaveWorldCarver {
                         carveSkipChecker
                 );
 
-                jBound += random.nextInt(4);
+                jBound += random.nextInt(6);
             }
 
             for(int j = 0; j < jBound; j++) {
-                float yaw       = 0; // (float) weightedRandomNumber(random, -1.0, 1.0, 0.0, 0.6) / 8;
-                float pitch     = 0; // (float) weightedRandomNumber(random, -1.0, 1.0, 0.0, 0.6) / 8;
+                float yaw       = 0;
+                float pitch     = 0;
 
-                int branchCount = 112 - random.nextInt(32);
+                int branchCount = 132 - random.nextInt(32);
 
                 this.createTunnel(
                     context,
@@ -170,12 +170,7 @@ public class CustomCarver extends CaveWorldCarver {
         int rBranchCountTest = randomSource.nextInt(branchCount / 2) + branchCount / 4;
 
         for(int i = branchIndex; i < branchCount; i++) {
-            double test = randomSource.nextDouble();
-            if (test < 5.0) {
-                x += 1;
-            } else {
-                z += 1;
-            }
+            z += 1;
 
             y += Math.signum(pitch);
 
@@ -206,7 +201,7 @@ public class CustomCarver extends CaveWorldCarver {
                 return;
             }
 
-            if (randomSource.nextInt(4) != 0) {
+            if (randomSource.nextInt(3) != 0) {
                 // i = branchIndex
                 if (!canReach(chunkAccess.getPos(), x, z, i, branchCount, thickness)) {
                     return;
@@ -228,6 +223,65 @@ public class CustomCarver extends CaveWorldCarver {
                 );
             }
         }
+        // END Z
+
+        rBranchCountTest = randomSource.nextInt(branchCount / 2) + branchCount / 4;
+
+        for(int i = branchIndex; i < branchCount; i++) {
+            x += 1;
+
+            y += Math.signum(pitch);
+
+            if (i == rBranchCountTest && thickness > 1.0F) {
+                for (int t = 0; t < 2; t++) {
+                    this.createTunnel(
+                            context,
+                            configuration,
+                            chunkAccess,
+                            biomeAccessor,
+                            randomSource.nextLong(),
+                            aquifer,
+                            x,
+                            y,
+                            z,
+                            horizontalRadiusMultiplier,
+                            verticalRadiusMultiplier,
+                            thickness,
+                            yaw,
+                            pitch,
+                            i,
+                            branchCount,
+                            1.0,
+                            carvingMask,
+                            skipChecker
+                    );
+                }
+                return;
+            }
+
+            if (randomSource.nextInt(3) != 0) {
+                // i = branchIndex
+                if (!canReach(chunkAccess.getPos(), x, z, i, branchCount, thickness)) {
+                    return;
+                }
+
+                this.carveEllipsoid(
+                        context,
+                        configuration,
+                        chunkAccess,
+                        biomeAccessor,
+                        aquifer,
+                        x,
+                        y,
+                        z,
+                        horizontalRadiusMultiplier,
+                        verticalRadiusMultiplier,
+                        carvingMask,
+                        skipChecker
+                );
+            }
+        }
+
     }
 
     /**
@@ -301,10 +355,10 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     private static boolean skipCheck(double x, double y, double z, double maxY) {
-        if (y <= maxY) {
+        if (y < maxY) {
             return true;
         } else {
-            return (x * x) + (y * y) + (z * z) >= 1.0;
+            return y >= 1.0;
         }
     }
 

@@ -23,15 +23,4 @@ public class ModCarvers {
         CUSTOM_CARVER_REG.register(event);
     }
 
-//    public static WorldCarver<CaveCarverConfiguration> CUSTOM_CARVER;
-//
-//    public static void registerCarvers() {
-//        CUSTOM_CARVER = register("custom_carver", new CustomCarver(CaveCarverConfiguration.CODEC));
-//    }
-//
-//    private static <C extends CarverConfiguration> WorldCarver<C> register(String name, WorldCarver<C> carver) {
-//        Registry.register(BuiltInRegistries.CARVER, new ResourceLocation(DimensionTest.MOD_ID, name), carver);
-//        return carver;
-//    }
-
 }

@@ -17,7 +17,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 public class ListStructuresCommand {
     public ListStructuresCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("list").then(Commands.literal("mod").then(Commands.literal("structures").executes(this::execute))));
+        dispatcher.register(Commands.literal("mod").then(Commands.literal("list").then(Commands.literal("structures").executes(this::execute))));
     }
 
     private int execute(CommandContext<CommandSourceStack> context) {

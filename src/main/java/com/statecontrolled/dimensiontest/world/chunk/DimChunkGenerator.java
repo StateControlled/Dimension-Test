@@ -2,7 +2,6 @@ package com.statecontrolled.dimensiontest.world.chunk;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -11,25 +10,18 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
@@ -37,10 +29,10 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+/**
+ * Chunk Generator is based on FlatLevelSource
+ **/
 public class DimChunkGenerator extends NoiseBasedChunkGenerator {
     public static final Codec<DimChunkGenerator> CODEC =
             RecordCodecBuilder.create(
@@ -62,15 +54,17 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
         this.globalFluidPicker = Suppliers.memoize(DimChunkGenerator::createFluidPicker);
     }
 
+    /**
+     * A copy of the method from NoiseBaseChunkGenerator.
+     **/
     private static Aquifer.FluidPicker createFluidPicker() {
         Aquifer.FluidStatus lavaAquifer = new Aquifer.FluidStatus(-60, Blocks.LAVA.defaultBlockState());
         Aquifer.FluidStatus waterAquifer = new Aquifer.FluidStatus(SEA_LEVEL, Blocks.WATER.defaultBlockState());
-        //Aquifer.FluidStatus aquifer$fluidstatus2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
+        Aquifer.FluidStatus fluid2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
         return (x, y, z) -> y < Math.min(-60, SEA_LEVEL) ? lavaAquifer : waterAquifer;
     }
 
     private void setLayers() {
-        //DimensionTest.LOGGER.log(Level.INFO, "Set layers of chunk generator");
         setFlatLayerInfo();
         updateLayers();
     }
@@ -93,7 +87,6 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
         for(FlatLayerInfo flatlayerinfo : LAYERS_INFO) {
             for(int i = 0; i < flatlayerinfo.getHeight(); i++) {
                 this.LAYERS.add(flatlayerinfo.getBlockState());
-                //DimensionTest.LOGGER.log(Level.INFO, "Added layer " + LAYERS.get(i).getBlock());
             }
         }
     }
@@ -132,6 +125,9 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
         return CompletableFuture.completedFuture(chunk);
     }
 
+    /**
+     * Copy of FlatLevelSource method.
+     **/
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         List<BlockState> list = this.LAYERS;
@@ -147,43 +143,7 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-//        try {
-//            ServerLevel serverLevel = level.getServer().getLevel(TestDimension.M_LEVEL_KEY);
-//            Optional<StructureTemplate> template = serverLevel.getStructureManager().get(new ResourceLocation(DimensionTest.MOD_ID, "corridor_cross"));
-//
-//            if (template.isPresent()) {
-//                StructureTemplate placeable = template.get();
-//
-//                ChunkPos pos = chunk.getPos();
-//                int x = pos.getBlockX(0);
-//                int z = pos.getBlockZ(0);
-//                int y = 72;
-//
-//                BlockPos position = new BlockPos(x, y, z);
-//
-//                DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Placing structure [" + placeable + "] at (" + x + ", " + y + ", " + z + ")");
-//
-//                placeable.placeInWorld(
-//                    serverLevel,
-//                    new BlockPos(0, 0, 0),
-//                    position,
-//                    new StructurePlaceSettings()
-//                            .setRotation(Rotation.NONE)
-//                            .setMirror(Mirror.NONE)
-//                            .setIgnoreEntities(false)
-//                            .setKeepLiquids(true)
-//                            .setBoundingBox(new BoundingBox(x, y, z, x + 15, y + 15, z + 15)),
-//                    serverLevel.random,
-//                    3
-//                );
-//            } else {
-//                DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Could not find structure at " + template);
-//            }
-//        } catch (NullPointerException e) {
-//            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "Unexpected NULL value : " + e.getMessage(), e);
-//        } catch (Exception e) {
-//            DimensionTest.LOGGER.log(java.util.logging.Level.SEVERE, "An exception has occurred : " + e.getMessage(), e);
-//        }
+        ;
     }
 
     @Override

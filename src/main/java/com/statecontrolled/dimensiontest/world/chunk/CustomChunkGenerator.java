@@ -146,6 +146,10 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
         ;
     }
 
+    public static int globalGetSeaLevel() {
+        return SEA_LEVEL;
+    }
+
     @Override
     public int getGenDepth() {
         return GENERATION_DEPTH;

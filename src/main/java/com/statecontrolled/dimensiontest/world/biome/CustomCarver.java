@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.mojang.serialization.Codec;
+import com.statecontrolled.dimensiontest.world.chunk.CustomChunkGenerator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -12,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
 public class CustomCarver extends CaveWorldCarver {
+    private static final int PITCH_CHANGE_CHANCE = 16;
 
     public CustomCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
@@ -35,26 +38,25 @@ public class CustomCarver extends CaveWorldCarver {
                          ChunkAccess chunkAccess,
                          Function<BlockPos, Holder<Biome>> biomeAccessor,
                          RandomSource random,
-                         Aquifer aquifer,
+                         Aquifer pAquifer,
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
-
-        int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
 
         // define starting position
         double x = chunkPos.getBlockX(random.nextInt(16));
         double y = configuration.y.sample(random, context) - 16;
         double z = chunkPos.getBlockZ(random.nextInt(16));
 
-        if (y < 32) {
-            y += 16;
-        }
-
-        double horizontalRadiusMul = 1.5;
-        double verticalRadiusMul   = 1.5;
-        double check = 0.5;
+        int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
+        double horizontalRadiusMul = randomInRange(random, 1, 3);
+        double verticalRadiusMul   = randomInRange(random, 1, 3);
+        double check = 0;
 
         float thickness = 2.0F;
+
+        Aquifer aquifer = Aquifer.createDisabled(
+            (pX, pY, pZ) -> new Aquifer.FluidStatus(CustomChunkGenerator.globalGetSeaLevel(), Blocks.WATER.defaultBlockState())
+        );
 
         for(int i = 0; i < iBound; i++) {
             WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rX, rY, rZ, check);
@@ -85,14 +87,15 @@ public class CustomCarver extends CaveWorldCarver {
 
 
             for(int j = 0; j < jBound; j++) {
-                float yaw       = randomOne(random);
-                float pitch     = randomOne(random);
+                float yaw   = randomOne(random);
+                float pitch = randomOne(random);
 
-                if (random.nextInt(3) <= 1) {
+                // Strongly prefer straight, level tunnels on the X or Z axis.
+                if (random.nextInt(PITCH_CHANGE_CHANCE) <= PITCH_CHANGE_CHANCE - 2) {
                     pitch = 0;
                 }
 
-                int branchCount = 112 - random.nextInt(32);
+                int branchCount = 110 - random.nextInt(32);
 
                 this.createTunnel(
                     context,
@@ -121,8 +124,21 @@ public class CustomCarver extends CaveWorldCarver {
         return true;
     }
 
+    /**
+     * @return -1, 0, or 1
+     **/
     private int randomOne(RandomSource random) {
         return random.nextInt(3) - 1;
+    }
+
+    /**
+     * Generates a random number within a given range.
+     * @param min   minimum bound (inclusive)
+     * @param max   maximum bound (inclusive)
+     * @return  A random number between the minimum and maximum
+     **/
+    private int randomInRange(RandomSource random, int min, int max) {
+        return random.nextInt(min, max +1);
     }
 
     @Override
@@ -180,12 +196,11 @@ public class CustomCarver extends CaveWorldCarver {
                                 CarvingMask carvingMask,
                                 WorldCarver.CarveSkipChecker skipChecker) {
 
+        // Create tunnels on Z-axis or X-axis
         RandomSource random = RandomSource.create(seed);
         int rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
-
         int check = random.nextInt(16); // 0 - 15
 
-        // Create tunnels on Z-axis
         for(int i = branchIndex; i < branchCount; i++) {
 
             if (check < 8) {
@@ -249,7 +264,7 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     /**
-     * Reconfigure to carve squares
+     * Reconfigured to carve squares
      **/
     @Override
     public boolean carveEllipsoid(CarvingContext context,
@@ -275,11 +290,11 @@ public class CustomCarver extends CaveWorldCarver {
             int minBlockZ = chunkpos.getMinBlockZ();
 
             int i       = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
-            int xBound  = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
-            int k       = Math.max(Mth.floor(y - verticalRadius) - 1, context.getMinGenY() + 1);
-
-            int yBound  = Math.min(Mth.floor(y + verticalRadius) + 1, context.getMinGenY() + context.getGenDepth() - 1 - 7);
             int j       = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
+            int k       = Math.max(Mth.floor(y - verticalRadius)   - 1, context.getMinGenY() + 1);
+
+            int xBound  = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
+            int yBound  = Math.min(Mth.floor(y + verticalRadius)   + 1, context.getMinGenY() + context.getGenDepth() - 1 - 7);
             int zBound  = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
             boolean flag = false;
 
@@ -318,8 +333,8 @@ public class CustomCarver extends CaveWorldCarver {
         }
     }
 
-    private static boolean skipCheck(double x, double y, double z, double maxY) {
-        if (y < maxY) {
+    private static boolean skipCheck(double x, double y, double z, double check) {
+        if (y < check) {
             return true;
         } else {
             return y >= 1.0;

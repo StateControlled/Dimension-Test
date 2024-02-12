@@ -16,8 +16,8 @@ public class ModChunkGenerators {
     public static final DeferredHolder<Codec<? extends ChunkGenerator>, Codec<TestChunkGenerator>> TEST_CHUNK_GENERATOR =
             CHUNK_GENERATORS.register("test_chunk_generator", () -> TestChunkGenerator.CODEC);
 
-    public static final DeferredHolder<Codec<? extends ChunkGenerator>, Codec<DimChunkGenerator>> DIM_CHUNK_GENERATOR =
-            CHUNK_GENERATORS.register("dim_chunk_generator", () -> DimChunkGenerator.CODEC);
+    public static final DeferredHolder<Codec<? extends ChunkGenerator>, Codec<CustomChunkGenerator>> DIM_CHUNK_GENERATOR =
+            CHUNK_GENERATORS.register("dim_chunk_generator", () -> CustomChunkGenerator.CODEC);
 
     private ModChunkGenerators() {
         ;

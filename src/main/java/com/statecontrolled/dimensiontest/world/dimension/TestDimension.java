@@ -6,7 +6,7 @@ import java.util.OptionalLong;
 import com.mojang.datafixers.util.Pair;
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
-import com.statecontrolled.dimensiontest.world.chunk.DimChunkGenerator;
+import com.statecontrolled.dimensiontest.world.chunk.CustomChunkGenerator;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -117,7 +117,7 @@ public class TestDimension {
 //        LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), testChunk);
 
         // CUSTOM NOISE GENERATION
-        DimChunkGenerator customChunk = new DimChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+        CustomChunkGenerator customChunk = new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH

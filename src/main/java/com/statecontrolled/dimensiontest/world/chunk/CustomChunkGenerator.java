@@ -33,13 +33,13 @@ import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 /**
  * Chunk Generator is based on FlatLevelSource
  **/
-public class DimChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final Codec<DimChunkGenerator> CODEC =
+public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
+    public static final Codec<CustomChunkGenerator> CODEC =
             RecordCodecBuilder.create(
                     (generatorInstance) -> generatorInstance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings)
-                    ).apply(generatorInstance, generatorInstance.stable(DimChunkGenerator::new))
+                    ).apply(generatorInstance, generatorInstance.stable(CustomChunkGenerator::new))
             );
 
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
@@ -48,10 +48,10 @@ public class DimChunkGenerator extends NoiseBasedChunkGenerator {
     private static final int SEA_LEVEL = -32;
     private final Supplier<Aquifer.FluidPicker> globalFluidPicker;
 
-    public DimChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
+    public CustomChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
         super(biomeSource, noiseGeneratorSettings);
         setLayers();
-        this.globalFluidPicker = Suppliers.memoize(DimChunkGenerator::createFluidPicker);
+        this.globalFluidPicker = Suppliers.memoize(CustomChunkGenerator::createFluidPicker);
     }
 
     /**

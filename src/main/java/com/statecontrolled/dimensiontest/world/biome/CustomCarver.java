@@ -39,7 +39,7 @@ public class CustomCarver extends CaveWorldCarver {
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
 
-        int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1) + 1;
+        int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
 
         // define starting position
         double x = chunkPos.getBlockX(random.nextInt(16));
@@ -61,7 +61,7 @@ public class CustomCarver extends CaveWorldCarver {
 
             int jBound = 1;
 
-            if (random.nextInt(3) == 0) {
+            if (random.nextInt(4) == 0) {
                 double horizontalVerticalRatio = configuration.yScale.sample(random);
                 float radius = 1.0F + (random.nextFloat() * 8.0F);
 
@@ -83,11 +83,16 @@ public class CustomCarver extends CaveWorldCarver {
                 jBound += random.nextInt(6);
             }
 
+
             for(int j = 0; j < jBound; j++) {
                 float yaw       = randomOne(random);
                 float pitch     = randomOne(random);
 
-                int branchCount = 132 - random.nextInt(32);
+                if (random.nextInt(3) <= 1) {
+                    pitch = 0;
+                }
+
+                int branchCount = 112 - random.nextInt(32);
 
                 this.createTunnel(
                     context,
@@ -111,6 +116,7 @@ public class CustomCarver extends CaveWorldCarver {
                     carveSkipChecker
                 );
             }
+            //
         }
         return true;
     }
@@ -177,11 +183,18 @@ public class CustomCarver extends CaveWorldCarver {
         RandomSource random = RandomSource.create(seed);
         int rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
 
+        int check = random.nextInt(16); // 0 - 15
+
         // Create tunnels on Z-axis
         for(int i = branchIndex; i < branchCount; i++) {
-            z += 1;
 
-            y += randomOne(random);
+            if (check < 8) {
+                z += 1;
+            } else {
+                x += 1;
+            }
+
+            y += pitch;
 
             if (i == rBranchCountTest && thickness > 1.0F) {
                 for (int t = 0; t < 2; t++) {
@@ -210,7 +223,7 @@ public class CustomCarver extends CaveWorldCarver {
                 return;
             }
 
-            if (random.nextInt(3) != 0) {
+            if (random.nextInt(4) != 0) {
                 // i = branchIndex
                 if (!canReach(chunkAccess.getPos(), x, z, i, branchCount, thickness)) {
                     return;
@@ -232,67 +245,7 @@ public class CustomCarver extends CaveWorldCarver {
                 );
             }
         }
-        // END Z
-
-        // Create tunnels on X-axis
-        rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
-
-        for(int i = branchIndex; i < branchCount; i++) {
-            x += 1;
-
-            y += randomOne(random);
-
-            if (i == rBranchCountTest && thickness > 1.0F) {
-                for (int t = 0; t < 3; t++) {
-                    this.createTunnel(
-                            context,
-                            configuration,
-                            chunkAccess,
-                            biomeAccessor,
-                            random.nextLong(),
-                            aquifer,
-                            x,
-                            y,
-                            z,
-                            horizontalRadiusMultiplier,
-                            verticalRadiusMultiplier,
-                            thickness,
-                            yaw,
-                            pitch,
-                            i,
-                            branchCount,
-                            1.0,
-                            carvingMask,
-                            skipChecker
-                    );
-                }
-                return;
-            }
-
-            if (random.nextInt(3) != 0) {
-                // i = branchIndex
-                if (!canReach(chunkAccess.getPos(), x, z, i, branchCount, thickness)) {
-                    return;
-                }
-
-                this.carveEllipsoid(
-                        context,
-                        configuration,
-                        chunkAccess,
-                        biomeAccessor,
-                        aquifer,
-                        x,
-                        y,
-                        z,
-                        horizontalRadiusMultiplier,
-                        verticalRadiusMultiplier,
-                        carvingMask,
-                        skipChecker
-                );
-            }
-        }
-        // END X
-
+        // END TUNNELS
     }
 
     /**
@@ -321,13 +274,13 @@ public class CustomCarver extends CaveWorldCarver {
             int minBlockX = chunkpos.getMinBlockX();
             int minBlockZ = chunkpos.getMinBlockZ();
 
-            int i = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
-            int xBound = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
-            int k = Math.max(Mth.floor(y - verticalRadius) - 1, context.getMinGenY() + 1);
+            int i       = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
+            int xBound  = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
+            int k       = Math.max(Mth.floor(y - verticalRadius) - 1, context.getMinGenY() + 1);
 
-            int yBound = Math.min(Mth.floor(y + verticalRadius) + 1, context.getMinGenY() + context.getGenDepth() - 1 - 7);
-            int j = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
-            int zBound = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
+            int yBound  = Math.min(Mth.floor(y + verticalRadius) + 1, context.getMinGenY() + context.getGenDepth() - 1 - 7);
+            int j       = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
+            int zBound  = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
             boolean flag = false;
 
             BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
@@ -379,4 +332,3 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
 }
-

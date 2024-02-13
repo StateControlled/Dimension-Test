@@ -45,7 +45,7 @@ public class TestDimension {
                         false,  // hasCeiling
                         false,  // ultrawarm
                         false,  // natural
-                        1.0,    // coordinate scale
+                        16.0,    // coordinate scale
                         true,   // bedWorks
                         false,  // respawn anchor works
                         -64,    // min Y
@@ -53,7 +53,7 @@ public class TestDimension {
                         320,    // logical height
                         BlockTags.INFINIBURN_OVERWORLD,
                         BuiltinDimensionTypes.OVERWORLD_EFFECTS,
-                        0.01f,  // ambient light
+                        0.1f,  // ambient light
                         new DimensionType.MonsterSettings(false, false, ConstantInt.of(4), 4)
                 )
         );
@@ -62,39 +62,6 @@ public class TestDimension {
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
         HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
         HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
-
-        //HolderGetter<PlacedFeature> features = context.lookup(Registries.PLACED_FEATURE);
-
-        //List<FlatLayerInfo> layerInfo = getFlatLayerInfo();
-
-//        Set<ResourceKey<StructureSet>> underground = Set.of(
-//                ModStructures.CORRIDOR_CROSS,
-//                ModStructures.CORRIDOR_EW,
-//                ModStructures.CORRIDOR_NS
-//        );
-
-        // STRUCTURES
-//        HolderGetter<StructureSet> structures = context.lookup(Registries.STRUCTURE_SET);
-//        Set<ResourceKey<StructureSet>> vanillaUnderground = ImmutableSet.of(
-//                BuiltinStructureSets.MINESHAFTS,
-//                BuiltinStructureSets.ANCIENT_CITIES
-//        );
-//        HolderSet.Direct<StructureSet> direct = HolderSet.direct(
-//            underground.stream()
-//                .map(structures::getOrThrow)
-//                .collect(Collectors.toList())
-//        );
-
-        // Define single biome for flatland generation
-//        Holder<Biome> biomeSet = biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE);
-
-        // FLATLEVELGENERATOR SETTINGS
-//        FlatLevelGeneratorSettings settings
-//             = new FlatLevelGeneratorSettings(
-//                Optional.of(direct),
-//                biomeSet,
-//                List.of()
-//            ).withBiomeAndLayers(layerInfo, Optional.of(direct), biomeSet);
 
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
                 new Climate.ParameterList<>(
@@ -108,38 +75,12 @@ public class TestDimension {
 
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
 
-        // VANILLA FLATLAND GENERATION
-//        FlatLevelSource flatlandChunkGenerator = new FlatLevelSource(settings);
-//        LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), flatlandChunkGenerator);
-
-        // CUSTOM FLATLAND GENERATION
-//        TestChunkGenerator testChunk = new TestChunkGenerator(settings, biomeSource);
-//        LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), testChunk);
-
         // CUSTOM NOISE GENERATION
         CustomChunkGenerator customChunk = new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Register Dimension");
         context.register(M_LEVEL_STEM, levelStem);
     }
-
-//    @NotNull
-//    private static List<FlatLayerInfo> getFlatLayerInfo() {
-//        FlatLayerInfo layer0 = new FlatLayerInfo(1, Blocks.BEDROCK);
-//        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.DEEPSLATE);
-//        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.STONE); // set to 319 for
-//        FlatLayerInfo layer3 = new FlatLayerInfo(1, Blocks.QUARTZ_BLOCK);
-//        FlatLayerInfo layer4 = new FlatLayerInfo(1, Blocks.BLACK_CONCRETE);
-//
-//        List<FlatLayerInfo> layerInfo = new ArrayList<>();
-//        layerInfo.add(layer0); // bottom layer
-//        layerInfo.add(layer1);
-//        layerInfo.add(layer2);
-//        layerInfo.add(layer3); // top layer
-//        layerInfo.add(layer4);
-//        return layerInfo;
-//    }
 
 }

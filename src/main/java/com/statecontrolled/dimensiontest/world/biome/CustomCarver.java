@@ -44,8 +44,8 @@ public class CustomCarver extends CaveWorldCarver {
 
         // define starting position
         double x = chunkPos.getBlockX(random.nextInt(16));
-        double y = configuration.y.sample(random, context) - 16;
         double z = chunkPos.getBlockZ(random.nextInt(16));
+        double y = configuration.y.sample(random, context) - 16;
 
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
         double horizontalRadiusMul = randomInRange(random, 1, 3);
@@ -85,17 +85,17 @@ public class CustomCarver extends CaveWorldCarver {
                 jBound += random.nextInt(6);
             }
 
-
             for(int j = 0; j < jBound; j++) {
                 float yaw   = randomOne(random);
-                float pitch = randomOne(random);
+                float pitch = randomOne(random) / 4.0F;
 
                 // Strongly prefer straight, level tunnels on the X or Z axis.
                 if (random.nextInt(PITCH_CHANGE_CHANCE) <= PITCH_CHANGE_CHANCE - 2) {
                     pitch = 0;
                 }
 
-                int branchCount = 110 - random.nextInt(32);
+                // This seems to be vital in determining how dense the caves are.
+                int branchCount = 108 - random.nextInt(32);
 
                 this.createTunnel(
                     context,
@@ -135,7 +135,7 @@ public class CustomCarver extends CaveWorldCarver {
      * Generates a random number within a given range.
      * @param min   minimum bound (inclusive)
      * @param max   maximum bound (inclusive)
-     * @return  A random number between the minimum and maximum
+     * @return      A random number between the minimum and maximum
      **/
     private int randomInRange(RandomSource random, int min, int max) {
         return random.nextInt(min, max +1);
@@ -301,17 +301,17 @@ public class CustomCarver extends CaveWorldCarver {
             BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
             BlockPos.MutableBlockPos checkPosition = new BlockPos.MutableBlockPos();
 
-            for(int maskX = i; maskX <= xBound; maskX++) {
-                int posX = chunkpos.getBlockX(maskX);
+            for(int mX = i; mX <= xBound; mX++) {
+                int posX = chunkpos.getBlockX(mX);
 
-                for(int maskZ = j; maskZ <= zBound; maskZ++) {
-                    int posZ = chunkpos.getBlockZ(maskZ);
+                for(int mZ = j; mZ <= zBound; mZ++) {
+                    int posZ = chunkpos.getBlockZ(mZ);
 
                     MutableBoolean surfaceCheck = new MutableBoolean(false);
 
-                    for(int maskY = yBound; maskY > k; maskY--) {
-                        carvingMask.set(maskX, maskY, maskZ);
-                        position.set(posX, maskY, posZ);
+                    for(int mY = yBound; mY > k; mY--) {
+                        carvingMask.set(mX, mY, mZ);
+                        position.set(posX, mY, posZ);
                         flag |= this.carveBlock(
                                 context,
                                 configuration,

@@ -203,11 +203,19 @@ public class CustomCarver extends CaveWorldCarver {
 
         for(int i = branchIndex; i < branchCount; i++) {
 
-            if (check < 8) {
+            if (check < 7) {
                 z += 1;
-            } else {
+            } else if (check >=7 && check < 14) {
                 x += 1;
+            } else {
+                y += 1;
             }
+
+//            if (check < 8) {
+//                z += 1;
+//            } else {
+//                x += 1;
+//            }
 
             y += pitch;
 

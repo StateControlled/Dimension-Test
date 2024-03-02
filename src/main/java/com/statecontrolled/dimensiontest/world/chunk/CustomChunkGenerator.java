@@ -17,6 +17,7 @@ import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -41,6 +42,8 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
                             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings)
                     ).apply(generatorInstance, generatorInstance.stable(CustomChunkGenerator::new))
             );
+
+    public static final Block CEILING = Blocks.BEDROCK;
 
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
     private final List<BlockState> LAYERS = Lists.newArrayList();
@@ -71,9 +74,9 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
 
     private void setFlatLayerInfo() {
         FlatLayerInfo layer0 = new FlatLayerInfo(1, Blocks.BEDROCK);
-        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.DEEPSLATE);
-        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.STONE); // set to 319 for deeper
-        FlatLayerInfo layer3 = new FlatLayerInfo(1, Blocks.GRANITE);
+        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
+        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK); // set to 319 for deeper
+        FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
 
         LAYERS_INFO.add(layer0); // bottom layer
         LAYERS_INFO.add(layer1);

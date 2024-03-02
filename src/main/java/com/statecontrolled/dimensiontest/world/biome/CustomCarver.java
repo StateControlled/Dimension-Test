@@ -132,6 +132,10 @@ public class CustomCarver extends CaveWorldCarver {
         return random.nextInt(3) - 1;
     }
 
+    private int getOne(RandomSource random) {
+        return random.nextInt(16) < 8 ? -1 : 1;
+    }
+
     /**
      * Generates a random number within a given range.
      * @param min   minimum bound (inclusive)
@@ -139,7 +143,7 @@ public class CustomCarver extends CaveWorldCarver {
      * @return      A random number between the minimum and maximum
      **/
     private int randomInRange(RandomSource random, int min, int max) {
-        return random.nextInt(min, max +1);
+        return random.nextInt(min, max + 1);
     }
 
     @Override
@@ -202,15 +206,16 @@ public class CustomCarver extends CaveWorldCarver {
         int rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
         // Check determines if X, Y, or Z are to be incremented
         int check = random.nextInt(16); // 0 - 15
+        int increment = getOne(random);
 
         for(int i = branchIndex; i < branchCount; i++) {
 
             if (check < 7) {
-                z += 1;
+                z += increment;
             } else if (check >=7 && check < 14) {
-                x += 1;
+                x += increment;
             } else {
-                y += 1;
+                y += increment;
             }
 
             y += pitch;
@@ -319,7 +324,7 @@ public class CustomCarver extends CaveWorldCarver {
 
                         BlockState blockstate = chunkAccess.getBlockState(position);
                         // TODO adjust for custom blocks
-                        if (!blockstate.is(Blocks.GRANITE)) {
+                        if (!blockstate.is(CustomChunkGenerator.CEILING)) {
                             flag |= this.carveBlock(
                                     context,
                                     configuration,

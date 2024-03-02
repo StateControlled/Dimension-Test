@@ -1,6 +1,7 @@
 package com.statecontrolled.dimensiontest.world.biome;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
+import com.statecontrolled.dimensiontest.ModTags;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -34,7 +35,7 @@ public class ModConfiguredCarvers {
                     ConstantFloat.of(0.75F),        // y scale
                     VerticalAnchor.aboveBottom(4),  // lava level
                     CarverDebugSettings.of(false, Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState()), // debug
-                    blockGetter.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),                    // replaceable
+                    blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
                     // TODO add mod blocks to replaceables
                     UniformFloat.of(0.85F, 2.0F),   // horizontal
                     UniformFloat.of(0.85F, 3.5F),   // vertical

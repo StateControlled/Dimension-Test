@@ -24,6 +24,7 @@ public class ModTags {
     }
 
     public static class Blocks {
+        public static final TagKey<Block> CAVE_WALLS = tag("cave_walls");
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(new ResourceLocation(DimensionTest.MOD_ID, name));

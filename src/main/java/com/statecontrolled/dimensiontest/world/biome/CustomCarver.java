@@ -14,6 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -199,6 +200,7 @@ public class CustomCarver extends CaveWorldCarver {
         // Create tunnels on Z-axis or X-axis
         RandomSource random = RandomSource.create(seed);
         int rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
+        // Check determines if X, Y, or Z are to be incremented
         int check = random.nextInt(16); // 0 - 15
 
         for(int i = branchIndex; i < branchCount; i++) {
@@ -210,12 +212,6 @@ public class CustomCarver extends CaveWorldCarver {
             } else {
                 y += 1;
             }
-
-//            if (check < 8) {
-//                z += 1;
-//            } else {
-//                x += 1;
-//            }
 
             y += pitch;
 
@@ -320,17 +316,22 @@ public class CustomCarver extends CaveWorldCarver {
                     for(int mY = yBound; mY > k; mY--) {
                         carvingMask.set(mX, mY, mZ);
                         position.set(posX, mY, posZ);
-                        flag |= this.carveBlock(
-                                context,
-                                configuration,
-                                chunkAccess,
-                                biomeAccessor,
-                                carvingMask,
-                                position,
-                                checkPosition,
-                                aquifer,
-                                surfaceCheck
-                        );
+
+                        BlockState blockstate = chunkAccess.getBlockState(position);
+                        // TODO adjust for custom blocks
+                        if (!blockstate.is(Blocks.GRANITE)) {
+                            flag |= this.carveBlock(
+                                    context,
+                                    configuration,
+                                    chunkAccess,
+                                    biomeAccessor,
+                                    carvingMask,
+                                    position,
+                                    checkPosition,
+                                    aquifer,
+                                    surfaceCheck
+                            );
+                        }
                     }
 
                 }

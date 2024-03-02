@@ -75,7 +75,7 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     private void setFlatLayerInfo() {
         FlatLayerInfo layer0 = new FlatLayerInfo(1, Blocks.BEDROCK);
         FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
-        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK); // set to 319 for deeper
+        FlatLayerInfo layer2 = new FlatLayerInfo(127, Blocks.QUARTZ_BLOCK); // set to 319 for deeper
         FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
 
         LAYERS_INFO.add(layer0); // bottom layer

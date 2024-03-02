@@ -35,8 +35,8 @@ public class ModConfiguredCarvers {
                     ConstantFloat.of(0.75F),        // y scale
                     VerticalAnchor.aboveBottom(4),  // lava level
                     CarverDebugSettings.of(false, Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState()), // debug
-                    blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
                     // TODO add mod blocks to replaceables
+                    blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
                     UniformFloat.of(0.85F, 2.0F),   // horizontal
                     UniformFloat.of(0.85F, 3.5F),   // vertical
                     UniformFloat.of(-0.1F, 0.1F)    // floor

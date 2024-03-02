@@ -323,7 +323,7 @@ public class CustomCarver extends CaveWorldCarver {
                         position.set(posX, mY, posZ);
 
                         BlockState blockstate = chunkAccess.getBlockState(position);
-                        // TODO adjust for custom blocks
+
                         if (!blockstate.is(CustomChunkGenerator.CEILING)) {
                             flag |= this.carveBlock(
                                     context,

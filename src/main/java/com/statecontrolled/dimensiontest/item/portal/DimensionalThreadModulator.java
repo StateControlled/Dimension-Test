@@ -39,15 +39,16 @@ public class DimensionalThreadModulator extends Item {
                         SoundEvents.PORTAL_TRAVEL, SoundSource.NEUTRAL, 1.0f, 0.35f);
 
                 if (handlePortal(serverPlayer, serverPlayer.blockPosition())) {
+                    DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Teleportation Success");
                     player.awardStat(Stats.ITEM_USED.get(this));
 
                     return InteractionResultHolder.success(itemStack);
                 } else {
-                    DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Player not teleported");
+                    DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Player not teleported (47)");
                     return InteractionResultHolder.fail(itemStack);
                 }
             } else {
-                DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Player not teleported");
+                DimensionTest.LOGGER.log(java.util.logging.Level.WARNING, "Player not teleported (51)");
                 return InteractionResultHolder.fail(itemStack);
             }
         } catch (Exception e) {

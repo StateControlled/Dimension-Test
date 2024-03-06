@@ -45,7 +45,7 @@ public class TestDimension {
                         false,  // hasCeiling
                         false,  // ultrawarm
                         false,  // natural
-                        16.0,    // coordinate scale
+                        16.0,   // coordinate scale
                         true,   // bedWorks
                         false,  // respawn anchor works
                         -64,    // min Y

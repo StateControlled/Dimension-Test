@@ -1,4 +1,4 @@
-package com.statecontrolled.dimensiontest.world.biome;
+package com.statecontrolled.dimensiontest.world.cave;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.ModTags;
@@ -8,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

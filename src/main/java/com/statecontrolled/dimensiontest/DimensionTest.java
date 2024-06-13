@@ -8,7 +8,7 @@ import java.util.logging.SimpleFormatter;
 
 import com.statecontrolled.dimensiontest.block.ModBlocks;
 import com.statecontrolled.dimensiontest.item.ModItems;
-import com.statecontrolled.dimensiontest.world.biome.ModCarvers;
+import com.statecontrolled.dimensiontest.world.cave.ModCarvers;
 import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
 
 import net.neoforged.bus.api.IEventBus;

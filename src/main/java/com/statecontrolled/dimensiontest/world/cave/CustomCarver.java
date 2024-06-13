@@ -1,4 +1,4 @@
-package com.statecontrolled.dimensiontest.world.biome;
+package com.statecontrolled.dimensiontest.world.cave;
 
 import java.util.function.Function;
 
@@ -132,6 +132,9 @@ public class CustomCarver extends CaveWorldCarver {
         return random.nextInt(3) - 1;
     }
 
+    /**
+     * @return -1 or 1
+     **/
     private int getOne(RandomSource random) {
         return random.nextInt(16) < 8 ? -1 : 1;
     }

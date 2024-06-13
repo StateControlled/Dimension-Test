@@ -1,7 +1,5 @@
 package com.statecontrolled.dimensiontest.datagen;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
@@ -11,20 +9,10 @@ import com.statecontrolled.dimensiontest.datagen.item.ModItemModelProvider;
 import com.statecontrolled.dimensiontest.datagen.item.ModItemTagProvider;
 import com.statecontrolled.dimensiontest.datagen.world.ModBiomeTagProvider;
 import com.statecontrolled.dimensiontest.datagen.world.WorldGenProvider;
-import com.statecontrolled.dimensiontest.world.biome.ModConfiguredCarvers;
 
-import net.minecraft.core.Cloner;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.registries.RegistriesDatapackGenerator;
-import net.minecraft.resources.RegistryDataLoader;
-import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;

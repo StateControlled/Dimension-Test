@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
-import com.statecontrolled.dimensiontest.world.biome.ModConfiguredCarvers;
+import com.statecontrolled.dimensiontest.world.cave.ModConfiguredCarvers;
 import com.statecontrolled.dimensiontest.world.dimension.TestDimension;
 
 import net.minecraft.core.HolderLookup;

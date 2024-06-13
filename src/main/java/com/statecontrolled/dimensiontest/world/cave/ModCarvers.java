@@ -1,4 +1,4 @@
-package com.statecontrolled.dimensiontest.world.biome;
+package com.statecontrolled.dimensiontest.world.cave;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
 

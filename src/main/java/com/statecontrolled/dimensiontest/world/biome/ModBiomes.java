@@ -1,7 +1,7 @@
 package com.statecontrolled.dimensiontest.world.biome;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.world.cave.ModConfiguredCarvers;
+import com.statecontrolled.dimensiontest.world.cave.CustomCarverConfiguration;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -56,7 +56,7 @@ public class ModBiomes {
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
         if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
+            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
         }
 
         return new Biome.BiomeBuilder()
@@ -87,7 +87,7 @@ public class ModBiomes {
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
         if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
+            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
         }
 
         return new Biome.BiomeBuilder()
@@ -118,7 +118,7 @@ public class ModBiomes {
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
         if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, ModConfiguredCarvers.CUSTOM_CARVER_KEY);
+            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
         }
 
         return new Biome.BiomeBuilder()

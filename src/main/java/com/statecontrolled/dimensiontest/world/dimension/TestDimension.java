@@ -53,7 +53,7 @@ public class TestDimension {
                         320,    // logical height
                         BlockTags.INFINIBURN_OVERWORLD,
                         BuiltinDimensionTypes.OVERWORLD_EFFECTS,
-                        0.1f,  // ambient light
+                        0.9f,  // ambient light
                         new DimensionType.MonsterSettings(false, false, ConstantInt.of(4), 4)
                 )
         );
@@ -66,9 +66,9 @@ public class TestDimension {
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
                 new Climate.ParameterList<>(
                         List.of(
-                                Pair.of(Climate.parameters(0.75F, 0.6F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
-                                Pair.of(Climate.parameters(0.80F, 0.7F, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
-                                Pair.of(Climate.parameters(0.85F, 0.8F, 0.0F, 0.0f, 0.0f, 1.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
+                                Pair.of(Climate.parameters(0.75F, 0.6F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
+                                Pair.of(Climate.parameters(0.80F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
+                                Pair.of(Climate.parameters(0.85F, 0.8F, 0.0F, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
                         )
                 )
         );

@@ -1,4 +1,4 @@
 /**
- * Contains classes that alter the world: biomes, chunk generators, cave carvers, and dimensions
+ * Contains classes that alter the world: biome definitions, chunk generators, cave carvers, and dimension definitions
  */
 package com.statecontrolled.dimensiontest.world;

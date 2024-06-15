@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 /**
  * Custom carver configuration
  **/
-public class ModConfiguredCarvers {
+public class CustomCarverConfiguration {
     public static final ResourceKey<ConfiguredWorldCarver<?>> CUSTOM_CARVER_KEY = createKey("custom_carver");
 
     public static void bootstrap(BootstapContext<ConfiguredWorldCarver<?>> context) {

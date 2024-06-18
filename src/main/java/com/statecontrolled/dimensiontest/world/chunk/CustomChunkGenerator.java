@@ -30,9 +30,14 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 
 /**
- * Chunk Generator is based on FlatLevelSource
+ * Chunk Generator is based on {@code FlatLevelSource} and {@code NoiseBasedChunkGenerator}.
+ * It generates a flatlands-style world.
+ *
+ * @see net.minecraft.world.level.levelgen.FlatLevelSource
+ * @see NoiseBasedChunkGenerator
  **/
 public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     public static final Codec<CustomChunkGenerator> CODEC =
@@ -44,6 +49,7 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
             );
 
     public static final Block CEILING = Blocks.BEDROCK;
+    public static final Block BASE = Blocks.BEDROCK;
 
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
     private final List<BlockState> LAYERS = Lists.newArrayList();
@@ -51,6 +57,9 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     private static final int SEA_LEVEL = -32;
     private final Supplier<Aquifer.FluidPicker> globalFluidPicker;
 
+    /**
+     * Constructor
+     */
     public CustomChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
         super(biomeSource, noiseGeneratorSettings);
         setLayers();
@@ -67,15 +76,21 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
         return (x, y, z) -> y < Math.min(-60, SEA_LEVEL) ? lavaAquifer : waterAquifer;
     }
 
+    /**
+     * Defines the block layers of the chunk.
+     */
     private void setLayers() {
         setFlatLayerInfo();
         updateLayers();
     }
 
+    /**
+     * Can add or subtract layers as desired. Layers should be added from bottom to top.
+     */
     private void setFlatLayerInfo() {
-        FlatLayerInfo layer0 = new FlatLayerInfo(1, Blocks.BEDROCK);
+        FlatLayerInfo layer0 = new FlatLayerInfo(1, BASE);
         FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
-        FlatLayerInfo layer2 = new FlatLayerInfo(127, Blocks.QUARTZ_BLOCK); // set to 319 for deeper
+        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
         FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
 
         LAYERS_INFO.add(layer0); // bottom layer
@@ -84,6 +99,9 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
         LAYERS_INFO.add(layer3); // top layer
     }
 
+    /**
+     * Related to {@link FlatLevelGeneratorSettings#updateLayers()} method.
+     */
     private void updateLayers() {
         this.LAYERS.clear();
 
@@ -99,7 +117,8 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * This is really just a copy of the Flatlands fillFromNoise method.
+     * This is really just a slightly modified copy of the {@link net.minecraft.world.level.levelgen.FlatLevelSource FlatLevelSource}
+     * {@link net.minecraft.world.level.levelgen.FlatLevelSource#fillFromNoise(Executor, Blender, RandomState, StructureManager, ChunkAccess) fillFromNoise()} method.
      **/
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random,

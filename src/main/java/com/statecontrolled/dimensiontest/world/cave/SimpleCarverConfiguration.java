@@ -1,7 +1,7 @@
 package com.statecontrolled.dimensiontest.world.cave;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.ModTags;
+import com.statecontrolled.dimensiontest.util.ModTags;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -26,16 +26,16 @@ public class SimpleCarverConfiguration {
         context.register(SIMPLE_CARVER_KEY,
                 ModCarvers.SIMPLE_CARVER.get().configured(
                         new CaveCarverConfiguration(
-                                0.95F,                          // probability
+                                0.70F,                          // probability
                                 UniformHeight.of(VerticalAnchor.aboveBottom(8), VerticalAnchor.absolute(200)),      // y
-                                ConstantFloat.of(1.0F),        // y scale
+                                ConstantFloat.of(1.0F),         // y scale
                                 VerticalAnchor.aboveBottom(4),  // lava level
-                                CarverDebugSettings.of(false, Blocks.RED_STAINED_GLASS.defaultBlockState()), // debug
+                                CarverDebugSettings.of(false, Blocks.RED_STAINED_GLASS.defaultBlockState()), // debug block
                                 // TODO add mod blocks to replaceables
                                 blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
-                                UniformFloat.of(0.85F, 2.0F),   // horizontal
-                                UniformFloat.of(0.85F, 3.5F),   // vertical
-                                UniformFloat.of(-0.1F, 0.1F)    // floor
+                                UniformFloat.of(1.0F, 4.0F),    // horizontal
+                                UniformFloat.of(1.0F, 4.0F),    // vertical
+                                ConstantFloat.of(1.0F)          // floor level
                         )
                 )
         );

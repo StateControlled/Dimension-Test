@@ -3,7 +3,7 @@ package com.statecontrolled.dimensiontest.datagen.block;
 import java.util.concurrent.CompletableFuture;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.ModTags;
+import com.statecontrolled.dimensiontest.util.ModTags;
 import com.statecontrolled.dimensiontest.block.ModBlocks;
 
 import net.minecraft.core.HolderLookup.Provider;

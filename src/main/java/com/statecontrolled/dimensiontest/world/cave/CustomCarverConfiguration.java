@@ -1,7 +1,7 @@
 package com.statecontrolled.dimensiontest.world.cave;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.ModTags;
+import com.statecontrolled.dimensiontest.util.ModTags;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

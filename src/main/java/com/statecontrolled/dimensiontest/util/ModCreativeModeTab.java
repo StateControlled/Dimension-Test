@@ -1,5 +1,6 @@
-package com.statecontrolled.dimensiontest;
+package com.statecontrolled.dimensiontest.util;
 
+import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.block.ModBlocks;
 import com.statecontrolled.dimensiontest.item.ModItems;
 

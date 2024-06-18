@@ -35,6 +35,8 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 /**
  * Chunk generator similar to FlatLevelSource
  **/
+@SuppressWarnings("DeprecatedIsStillUsed")
+@Deprecated
 public class TestChunkGenerator extends ChunkGenerator {
     public static final Codec<TestChunkGenerator> CODEC =
             RecordCodecBuilder.create((instance) ->

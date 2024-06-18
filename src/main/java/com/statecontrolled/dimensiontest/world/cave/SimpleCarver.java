@@ -46,11 +46,12 @@ public class SimpleCarver extends CaveWorldCarver {
         // define starting position
         double x = chunkPos.getBlockX(randomEvenNumberInRange(random, 0, 15));
         double z = chunkPos.getBlockZ(randomEvenNumberInRange(random, 0, 15));
-        double y = random.nextInt(-48, 48);
+        double y = configuration.y.sample(random, context);
 
+        // iBound will be weighted heavily towards zero
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
-        double horizontalRadiusMul = randomInRange(random, 1, 3);
-        double verticalRadiusMul   = randomInRange(random, 1, 3);
+        double horizontalRadiusMul = configuration.horizontalRadiusMultiplier.sample(random);
+        double verticalRadiusMul   = configuration.verticalRadiusMultiplier.sample(random);
         double check = 0;
 
         float thickness = 2.0F;
@@ -66,7 +67,7 @@ public class SimpleCarver extends CaveWorldCarver {
             int jBound = 1;
 
             if (random.nextInt(4) == 0) {
-                double horizontalVerticalRatio = configuration.yScale.sample(random);
+                double horizontalVerticalRatio = 1.0F;
                 float radius = 1.0F + (random.nextFloat() * 8.0F);
 
                 this.createRoom(
@@ -352,17 +353,6 @@ public class SimpleCarver extends CaveWorldCarver {
      **/
     private int getOne(RandomSource random) {
         return random.nextInt(16) < 8 ? -1 : 1;
-    }
-
-    /**
-     * Generates a random number within a given range.
-     *
-     * @param min   the minimum bound (inclusive)
-     * @param max   the maximum bound (inclusive)
-     * @return      A random number between the minimum and maximum
-     **/
-    private int randomInRange(RandomSource random, int min, int max) {
-        return random.nextInt(min, max + 1);
     }
 
     /**

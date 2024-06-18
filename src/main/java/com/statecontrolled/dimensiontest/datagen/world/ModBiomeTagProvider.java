@@ -5,8 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.Nullable;
 
 import com.statecontrolled.dimensiontest.DimensionTest;
-import com.statecontrolled.dimensiontest.ModTags;
-import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
+import com.statecontrolled.dimensiontest.util.ModTags;
 
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;

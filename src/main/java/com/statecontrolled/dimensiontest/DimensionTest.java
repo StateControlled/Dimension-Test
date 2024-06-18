@@ -15,6 +15,13 @@ import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
+/**
+ * Copyright 2024 by State_Controlled.
+ * <p>
+ * This source code is released under the MIT License.
+ *
+ * @author State_Controlled
+ */
 @Mod(DimensionTest.MOD_ID)
 public class DimensionTest {
     public static final String MOD_ID = "dimensiontest";
@@ -35,7 +42,8 @@ public class DimensionTest {
     }
 
     /**
-     * Main entry point for the Mod
+     * Main entry point for the Mod.
+     *
      * @param modEventBus NeoForge will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
      **/
     public DimensionTest(IEventBus modEventBus) {

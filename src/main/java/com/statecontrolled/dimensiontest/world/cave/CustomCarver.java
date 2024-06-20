@@ -23,6 +23,9 @@ import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
+/**
+ * Version 2 of CustomCarver
+ */
 public class CustomCarver extends CaveWorldCarver {
     private static final int PITCH_CHANGE_CHANCE = 16;
 
@@ -44,29 +47,30 @@ public class CustomCarver extends CaveWorldCarver {
                          CarvingMask carvingMask) {
 
         // define starting position
-        double x = chunkPos.getBlockX(random.nextInt(16));
-        double z = chunkPos.getBlockZ(random.nextInt(16));
-        double y = configuration.y.sample(random, context) - 16;
+        double x = chunkPos.getBlockX(randomEvenNumberInRange(random, 0, 15));
+        double z = chunkPos.getBlockZ(randomEvenNumberInRange(random, 0, 15));
+        double y = configuration.y.sample(random, context);
 
+        // iBound will be weighted heavily towards zero
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
-        double horizontalRadiusMul = randomInRange(random, 1, 3);
-        double verticalRadiusMul   = randomInRange(random, 1, 3);
+        double horizontalRadiusMul = configuration.horizontalRadiusMultiplier.sample(random);
+        double verticalRadiusMul   = configuration.verticalRadiusMultiplier.sample(random);
         double check = 0;
 
         float thickness = 2.0F;
 
         Aquifer aquifer = Aquifer.createDisabled(
-            (pX, pY, pZ) -> new Aquifer.FluidStatus(CustomChunkGenerator.globalGetSeaLevel(), Blocks.WATER.defaultBlockState())
+                (pX, pY, pZ) -> new Aquifer.FluidStatus(CustomChunkGenerator.globalGetSeaLevel(), Blocks.WATER.defaultBlockState())
         );
 
-        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rX, rY, rZ, check);
+        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, check);
 
         for(int i = 0; i < iBound; i++) {
 
             int jBound = 1;
 
             if (random.nextInt(4) == 0) {
-                double horizontalVerticalRatio = configuration.yScale.sample(random);
+                double horizontalVerticalRatio = 1.0F;
                 float radius = 1.0F + (random.nextFloat() * 8.0F);
 
                 this.createRoom(
@@ -97,28 +101,28 @@ public class CustomCarver extends CaveWorldCarver {
                 }
 
                 // This seems to be vital in determining how dense the caves are.
-                int branchCount = 108 - random.nextInt(32);
+                int branchCount = 108 - random.nextInt(64);
 
                 this.createTunnel(
-                    context,
-                    configuration,
-                    chunkAccess,
-                    biomeAccessor,
-                    random.nextLong(),  // seed
-                    aquifer,
-                    x,
-                    y,
-                    z,
-                    horizontalRadiusMul,
-                    verticalRadiusMul,
-                    thickness,
-                    yaw,
-                    pitch,
-                    0,                  // branchIndex
-                    branchCount,        // branchCount
-                    this.getYScale(),   // horizontalVerticalRatio
-                    carvingMask,
-                    carveSkipChecker
+                        context,
+                        configuration,
+                        chunkAccess,
+                        biomeAccessor,
+                        random.nextLong(),  // seed
+                        aquifer,
+                        x,
+                        y,
+                        z,
+                        horizontalRadiusMul,
+                        verticalRadiusMul,
+                        thickness,
+                        yaw,
+                        pitch,
+                        0,                  // branchIndex
+                        branchCount,        // branchCount
+                        this.getYScale(),   // horizontalVerticalRatio
+                        carvingMask,
+                        carveSkipChecker
                 );
             }
             //
@@ -126,88 +130,64 @@ public class CustomCarver extends CaveWorldCarver {
         return true;
     }
 
-    /**
-     * @return -1, 0, or 1
-     **/
-    private int randomOne(RandomSource random) {
-        return random.nextInt(3) - 1;
-    }
-
-    /**
-     * @return -1 or 1
-     **/
-    private int getOne(RandomSource random) {
-        return random.nextInt(16) < 8 ? -1 : 1;
-    }
-
-    /**
-     * Generates a random number within a given range.
-     * @param min   minimum bound (inclusive)
-     * @param max   maximum bound (inclusive)
-     * @return      A random number between the minimum and maximum
-     **/
-    private int randomInRange(RandomSource random, int min, int max) {
-        return random.nextInt(min, max + 1);
-    }
-
     @Override
     public void createRoom(CarvingContext context,
-                            CaveCarverConfiguration configuration,
-                            ChunkAccess chunkAccess,
-                            Function<BlockPos, Holder<Biome>> biomeAccessor,
-                            Aquifer aquifer,
-                            double x,
-                            double y,
-                            double z,
-                            float radius,
-                            double horizontalVerticalRatio,
-                            CarvingMask carvingMask,
-                            WorldCarver.CarveSkipChecker skipChecker) {
+                           CaveCarverConfiguration configuration,
+                           ChunkAccess chunkAccess,
+                           Function<BlockPos, Holder<Biome>> biomeAccessor,
+                           Aquifer aquifer,
+                           double x,
+                           double y,
+                           double z,
+                           float radius,
+                           double horizontalVerticalRatio,
+                           CarvingMask carvingMask,
+                           WorldCarver.CarveSkipChecker skipChecker) {
 
         double horizontalRadius = 1.5 * radius;
         double verticalRadius = horizontalRadius * horizontalVerticalRatio;
 
         this.carveEllipsoid(
-            context,
-            configuration,
-            chunkAccess,
-            biomeAccessor,
-            aquifer,
-            x,
-            y,
-            z,
-            horizontalRadius,
-            verticalRadius,
-            carvingMask,
-            skipChecker
+                context,
+                configuration,
+                chunkAccess,
+                biomeAccessor,
+                aquifer,
+                x,
+                y,
+                z,
+                horizontalRadius,
+                verticalRadius,
+                carvingMask,
+                skipChecker
         );
 
     }
 
     @Override
     public void createTunnel(CarvingContext context,
-                                CaveCarverConfiguration configuration,
-                                ChunkAccess chunkAccess,
-                                Function<BlockPos, Holder<Biome>> biomeAccessor,
-                                long seed,
-                                Aquifer aquifer,
-                                double x,
-                                double y,
-                                double z,
-                                double horizontalRadiusMultiplier,
-                                double verticalRadiusMultiplier,
-                                float thickness,
-                                float yaw,
-                                float pitch,
-                                int branchIndex,
-                                int branchCount,
-                                double horizontalVerticalRatio,
-                                CarvingMask carvingMask,
-                                WorldCarver.CarveSkipChecker skipChecker) {
+                             CaveCarverConfiguration configuration,
+                             ChunkAccess chunkAccess,
+                             Function<BlockPos, Holder<Biome>> biomeAccessor,
+                             long seed,
+                             Aquifer aquifer,
+                             double x,
+                             double y,
+                             double z,
+                             double horizontalRadiusMultiplier,
+                             double verticalRadiusMultiplier,
+                             float thickness,
+                             float yaw,
+                             float pitch,
+                             int branchIndex,
+                             int branchCount,
+                             double horizontalVerticalRatio,
+                             CarvingMask carvingMask,
+                             WorldCarver.CarveSkipChecker skipChecker) {
 
         // Create tunnels on Z-axis or X-axis
         RandomSource random = RandomSource.create(seed);
-        int rBranchCountTest = random.nextInt(branchCount / 2) + branchCount / 4;
+        int rBranchCountTest = random.nextInt(branchCount / 2) + (branchCount / 4);
         // Check determines if X, Y, or Z are to be incremented
         int check = random.nextInt(16); // 0 - 15
         int increment = getOne(random);
@@ -216,7 +196,7 @@ public class CustomCarver extends CaveWorldCarver {
 
             if (check < 7) {
                 z += increment;
-            } else if (check >=7 && check < 14) {
+            } else if (check < 14) {
                 x += increment;
             } else {
                 y += increment;
@@ -243,7 +223,7 @@ public class CustomCarver extends CaveWorldCarver {
                             pitch,
                             i,
                             branchCount,
-                            1.0,
+                            this.getYScale(),
                             carvingMask,
                             skipChecker
                     );
@@ -351,7 +331,7 @@ public class CustomCarver extends CaveWorldCarver {
         }
     }
 
-    private static boolean skipCheck(double x, double y, double z, double check) {
+    private static boolean skipCheck(double y, double check) {
         if (y < check) {
             return true;
         } else {
@@ -362,6 +342,40 @@ public class CustomCarver extends CaveWorldCarver {
     @Override
     public double getYScale() {
         return 1.0;
+    }
+
+    /**
+     * @return -1, 0, or 1
+     **/
+    private int randomOne(RandomSource random) {
+        return random.nextInt(3) - 1;
+    }
+
+    /**
+     * @return -1 or 1
+     **/
+    private int getOne(RandomSource random) {
+        return random.nextInt(16) < 8 ? -1 : 1;
+    }
+
+    /**
+     * Returns a random even number within the given range.
+     *
+     * @param min   the minimum bound (inclusive)
+     * @param max   the maximum bound (inclusive)
+     * @return      a random even number within the range [min, max]
+     * @throws      IllegalArgumentException if there is no even number in the range
+     */
+    public static int randomEvenNumberInRange(RandomSource random, int min, int max) {
+        int evenMin = (min % 2 == 0) ? min : min + 1;
+        int evenMax = (max % 2 == 0) ? max : max - 1;
+
+        if (evenMin > evenMax) {
+            throw new IllegalArgumentException("No even numbers in the given range");
+        }
+
+        int range = ((evenMax - evenMin) / 2) + 1;
+        return evenMin + (2 * random.nextInt(range));
     }
 
 }

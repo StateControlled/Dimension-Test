@@ -24,8 +24,6 @@ public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_TWO = register("biome_two");
     public static final ResourceKey<Biome> BIOME_THREE = register("biome_three");
 
-    private static final boolean USE_CUSTOM_CARVER = true;
-
     private ModBiomes() {
         ;
     }
@@ -55,9 +53,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
-        }
+        // CustomCarver
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
@@ -86,9 +83,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
-        }
+        // CustomCarver
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
@@ -117,9 +113,8 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
-        if (USE_CUSTOM_CARVER) {
-            biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
-        }
+        // CustomCarver
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)

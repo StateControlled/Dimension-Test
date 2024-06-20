@@ -14,7 +14,7 @@
             "humidity": 0.6,
             "offset": 0.0,
             "temperature": 0.75,
-            "weirdness": 1.0
+            "weirdness": 0.0
           }
         },
         {
@@ -26,7 +26,7 @@
             "humidity": 0.7,
             "offset": 0.0,
             "temperature": 0.8,
-            "weirdness": 1.0
+            "weirdness": 0.0
           }
         },
         {
@@ -38,7 +38,7 @@
             "humidity": 0.8,
             "offset": 0.0,
             "temperature": 0.85,
-            "weirdness": 1.0
+            "weirdness": 0.0
           }
         }
       ]

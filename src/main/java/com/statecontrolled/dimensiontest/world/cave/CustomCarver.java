@@ -24,7 +24,9 @@ import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
 /**
- * Version 2 of CustomCarver
+ * The CustomCarver class will carve rectangular rooms and tunnels.
+ * There is a small chance for a sloped tunnel or vertical shaft to generate.
+ *
  */
 public class CustomCarver extends CaveWorldCarver {
     private static final int PITCH_CHANGE_CHANCE = 16;
@@ -35,7 +37,7 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     /**
-     * Objective : reduce randomness to force tunnels and rooms to be rectangular with flat floors.
+     * The primary carving method. Everything is right angles.
      **/
     @Override
     public boolean carve(CarvingContext context,
@@ -46,6 +48,12 @@ public class CustomCarver extends CaveWorldCarver {
                          Aquifer unused,
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
+
+        Aquifer aquifer = Aquifer.createDisabled(
+                (pX, pY, pZ) -> new Aquifer.FluidStatus(-32, Blocks.WATER.defaultBlockState())
+        );
+
+        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, 0);
 
         // define starting position
         double x = chunkPos.getBlockX(randomEvenNumberInRange(random, 0, 15));
@@ -58,12 +66,6 @@ public class CustomCarver extends CaveWorldCarver {
         double verticalRadiusMul   = configuration.verticalRadiusMultiplier.sample(random);
 
         float thickness = 2.0F;
-
-        Aquifer aquifer = Aquifer.createDisabled(
-                (pX, pY, pZ) -> new Aquifer.FluidStatus(-32, Blocks.WATER.defaultBlockState())
-        );
-
-        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, 0);
 
         for(int i = 0; i < iBound; i++) {
 
@@ -92,8 +94,8 @@ public class CustomCarver extends CaveWorldCarver {
             }
 
             for(int j = 0; j < jBound; j++) {
-                float yaw   = randomOne(random);
-                float pitch = randomOne(random) / SLOPE;
+                float yaw   = randomOneOrZero(random);
+                float pitch = randomOneOrZero(random) / SLOPE;
 
                 // Strongly prefer straight, level tunnels on the X or Z axis.
                 if (random.nextInt(PITCH_CHANGE_CHANCE) <= PITCH_CHANGE_CHANCE - 2) {
@@ -125,7 +127,6 @@ public class CustomCarver extends CaveWorldCarver {
                         carveSkipChecker
                 );
             }
-            //
         }
         return true;
     }
@@ -190,7 +191,7 @@ public class CustomCarver extends CaveWorldCarver {
         int rBranchCountTest = random.nextInt(branchCount / 2) + (branchCount / 4);
         // Check determines if X, Y, or Z are to be incremented
         int test = 16;
-        int check = random.nextInt(test); // 0 - 15
+        int check = random.nextInt(test); // 0 to test (exclusive)
         int increment = getOne(random);
 
         for(int i = branchIndex; i < branchCount; i++) {
@@ -341,7 +342,7 @@ public class CustomCarver extends CaveWorldCarver {
     /**
      * @return -1, 0, or 1
      **/
-    private int randomOne(RandomSource random) {
+    private int randomOneOrZero(RandomSource random) {
         return random.nextInt(3) - 1;
     }
 

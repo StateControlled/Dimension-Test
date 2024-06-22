@@ -1,5 +1,6 @@
 package com.statecontrolled.dimensiontest.world.dimension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalLong;
 
@@ -19,10 +20,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 
 public class TestDimension {
     public static final ResourceKey<LevelStem> M_LEVEL_STEM          = ResourceKey.create(Registries.LEVEL_STEM,
@@ -75,12 +79,32 @@ public class TestDimension {
 
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
 
-        // CUSTOM NOISE GENERATION
-        CustomChunkGenerator customChunk = new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+        // CUSTOM CHUNK GENERATION
+        List<FlatLayerInfo> layerInfoList = setFlatLayerInfo();
+
+        CustomChunkGenerator customChunk =
+                new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD)).withLayers(layerInfoList);
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH
         context.register(M_LEVEL_STEM, levelStem);
+    }
+
+    private static List<FlatLayerInfo> setFlatLayerInfo() {
+        List<FlatLayerInfo> layerInfoList = new ArrayList<>();
+        Block CEILING = Blocks.BEDROCK;
+        Block BASE = Blocks.BEDROCK;
+
+        FlatLayerInfo layer0 = new FlatLayerInfo(1, BASE);
+        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
+        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
+        FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
+
+        layerInfoList.add(layer0); // bottom layer
+        layerInfoList.add(layer1);
+        layerInfoList.add(layer2);
+        layerInfoList.add(layer3); // top layer
+        return layerInfoList;
     }
 
 }

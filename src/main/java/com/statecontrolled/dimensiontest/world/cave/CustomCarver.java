@@ -278,7 +278,9 @@ public class CustomCarver extends CaveWorldCarver {
         double midZ = chunkpos.getMiddleBlockZ();
         double check = 16.0 + horizontalRadius * 2.0;
 
-        if (!(Math.abs(x - midX) > check) && !(Math.abs(z - midZ) > check)) {
+        // TODO find a way to make this better. Ideally, Y should adjust to the height of the chunk.
+        //if (!(Math.abs(x - midX) > check) && !(Math.abs(z - midZ) > check)) {
+        if (y < 40) {
             int minBlockX = chunkpos.getMinBlockX();
             int minBlockZ = chunkpos.getMinBlockZ();
 
@@ -332,11 +334,12 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     private static boolean skipCheck(double y, double check) {
-        if (y < check) {
-            return true;
-        } else {
-            return y >= 1.0;
-        }
+//        if (y < check) {
+//            return true;
+//        } else {
+//            return y >= 1.0;
+//        }
+        return y < check;
     }
 
     @Override

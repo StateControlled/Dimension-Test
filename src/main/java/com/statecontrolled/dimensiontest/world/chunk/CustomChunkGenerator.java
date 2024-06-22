@@ -55,39 +55,64 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     private final List<BlockState> LAYERS = Lists.newArrayList();
     private final int GENERATION_DEPTH = 384;
     private static final int SEA_LEVEL = -32;
-    private final Supplier<Aquifer.FluidPicker> globalFluidPicker;
+    private final Supplier<Aquifer.FluidPicker> globalFluidPicker; // I don't understand what this does.
 
     /**
-     * Constructor
+     * Constructor related to {@link NoiseBasedChunkGenerator}. Utilize with {@link CustomChunkGenerator#withLayers(List)} for proper functionality. Failure to do so may
+     * result in unexpected behavior of the chunk generator.
      */
     public CustomChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
         super(biomeSource, noiseGeneratorSettings);
-        setLayers();
         this.globalFluidPicker = Suppliers.memoize(CustomChunkGenerator::createFluidPicker);
     }
 
     /**
+     * Defines the block layers that the {@link CustomChunkGenerator} will use to build its chunks.
+     * Required for the {@link CustomChunkGenerator} to function properly.
+     * If no list is defined, a default list will populate.
+     *
+     * @param layers    a list of {@link FlatLayerInfo} describing the block layers to be generated with this chunk. May be {@code null}.
+     * @return  this.
+     */
+    public CustomChunkGenerator withLayers(List<FlatLayerInfo> layers) {
+        setLayers(layers);
+        return this;
+    }
+
+    /**
      * A copy of the method from NoiseBaseChunkGenerator.
+     * It may not be necessary, but I have it here anyway.
      **/
     private static Aquifer.FluidPicker createFluidPicker() {
         Aquifer.FluidStatus lavaAquifer = new Aquifer.FluidStatus(-60, Blocks.LAVA.defaultBlockState());
         Aquifer.FluidStatus waterAquifer = new Aquifer.FluidStatus(SEA_LEVEL, Blocks.WATER.defaultBlockState());
-        Aquifer.FluidStatus fluid2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
+        //Aquifer.FluidStatus fluid2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
         return (x, y, z) -> y < Math.min(-60, SEA_LEVEL) ? lavaAquifer : waterAquifer;
     }
 
     /**
      * Defines the block layers of the chunk.
      */
-    private void setLayers() {
-        setFlatLayerInfo();
+    private void setLayers(List<FlatLayerInfo> layers) {
+        setFlatLayerInfo(layers);
         updateLayers();
     }
 
     /**
      * Can add or subtract layers as desired. Layers should be added from bottom to top.
+     * If the list is empty or null, a default set will be applied.
+     *
+     * @param layers    list of layers as {@link FlatLayerInfo}s. May be null.
      */
-    private void setFlatLayerInfo() {
+    private void setFlatLayerInfo(List<FlatLayerInfo> layers) {
+        if (layers == null || layers.isEmpty()) {
+            setDefaultLayers();
+        } else {
+            LAYERS_INFO.addAll(layers);
+        }
+    }
+
+    private void setDefaultLayers() {
         FlatLayerInfo layer0 = new FlatLayerInfo(1, BASE);
         FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
         FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
@@ -114,6 +139,10 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
 
     public List<FlatLayerInfo> getLayerInfo() {
         return LAYERS_INFO;
+    }
+
+    public int getDepth() {
+        return LAYERS.size();
     }
 
     /**

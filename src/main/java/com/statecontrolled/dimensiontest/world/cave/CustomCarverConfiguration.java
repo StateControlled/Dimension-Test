@@ -32,15 +32,15 @@ public class CustomCarverConfiguration {
         context.register(CUSTOM_CARVER_KEY,
             ModCarvers.CUSTOM_CARVER.get().configured(
                 new CaveCarverConfiguration(
-                    0.70F,                          // probability
+                    0.50F,                          // probability
                     UniformHeight.of(VerticalAnchor.aboveBottom(8), VerticalAnchor.absolute(200)),      // y
                     ConstantFloat.of(1.0F),         // y scale
                     VerticalAnchor.aboveBottom(4),  // lava level
                     CarverDebugSettings.of(false, Blocks.RED_STAINED_GLASS.defaultBlockState()), // debug block
                     // TODO add mod blocks to replaceables
                     blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
-                    UniformFloat.of(1.0F, 3.0F),    // horizontal
-                    UniformFloat.of(1.0F, 3.0F),    // vertical
+                    UniformFloat.of(1.0F, 5.0F),    // horizontal
+                    UniformFloat.of(1.0F, 5.0F),    // vertical
                     UniformFloat.of(0.0F, 1.0F)     // floor level
                 )
             )

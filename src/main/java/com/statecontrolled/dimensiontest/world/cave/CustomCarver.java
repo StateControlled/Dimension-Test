@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.carver.WorldCarver;
  */
 public class CustomCarver extends CaveWorldCarver {
     private static final int PITCH_CHANGE_CHANCE = 16;
+    private static final float SLOPE = 4.0F;
 
     public CustomCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
@@ -55,7 +56,6 @@ public class CustomCarver extends CaveWorldCarver {
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
         double horizontalRadiusMul = configuration.horizontalRadiusMultiplier.sample(random);
         double verticalRadiusMul   = configuration.verticalRadiusMultiplier.sample(random);
-        double check = 0;
 
         float thickness = 2.0F;
 
@@ -63,7 +63,7 @@ public class CustomCarver extends CaveWorldCarver {
                 (pX, pY, pZ) -> new Aquifer.FluidStatus(-32, Blocks.WATER.defaultBlockState())
         );
 
-        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, check);
+        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, 0);
 
         for(int i = 0; i < iBound; i++) {
 
@@ -93,7 +93,7 @@ public class CustomCarver extends CaveWorldCarver {
 
             for(int j = 0; j < jBound; j++) {
                 float yaw   = randomOne(random);
-                float pitch = randomOne(random) / 4.0F;
+                float pitch = randomOne(random) / SLOPE;
 
                 // Strongly prefer straight, level tunnels on the X or Z axis.
                 if (random.nextInt(PITCH_CHANGE_CHANCE) <= PITCH_CHANGE_CHANCE - 2) {
@@ -189,14 +189,15 @@ public class CustomCarver extends CaveWorldCarver {
         RandomSource random = RandomSource.create(seed);
         int rBranchCountTest = random.nextInt(branchCount / 2) + (branchCount / 4);
         // Check determines if X, Y, or Z are to be incremented
-        int check = random.nextInt(16); // 0 - 15
+        int test = 16;
+        int check = random.nextInt(test); // 0 - 15
         int increment = getOne(random);
 
         for(int i = branchIndex; i < branchCount; i++) {
-
-            if (check < 7) {
+            // favor x and z directions
+            if (check < ((test * 7)/16)) {
                 z += increment;
-            } else if (check < 14) {
+            } else if (check < ((test * 14)/16)) {
                 x += increment;
             } else {
                 y += increment;

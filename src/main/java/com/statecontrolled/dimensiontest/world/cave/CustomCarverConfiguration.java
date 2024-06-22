@@ -32,8 +32,8 @@ public class CustomCarverConfiguration {
         context.register(CUSTOM_CARVER_KEY,
             ModCarvers.CUSTOM_CARVER.get().configured(
                 new CaveCarverConfiguration(
-                    0.50F,                          // probability
-                    UniformHeight.of(VerticalAnchor.aboveBottom(8), VerticalAnchor.absolute(200)),      // y
+                    0.80F,                          // probability
+                    UniformHeight.of(VerticalAnchor.aboveBottom(8), VerticalAnchor.absolute(200)),  // y
                     ConstantFloat.of(1.0F),         // y scale
                     VerticalAnchor.aboveBottom(4),  // lava level
                     CarverDebugSettings.of(false, Blocks.RED_STAINED_GLASS.defaultBlockState()), // debug block

@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -22,8 +19,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -33,7 +28,7 @@ import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 
 /**
- * Chunk Generator is based on {@code FlatLevelSource} and {@code NoiseBasedChunkGenerator}.
+ * CustomChunkGenerator class is based on {@code FlatLevelSource} and {@code NoiseBasedChunkGenerator}.
  * It generates a flatlands-style world.
  *
  * @see net.minecraft.world.level.levelgen.FlatLevelSource
@@ -48,22 +43,17 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
                     ).apply(generatorInstance, generatorInstance.stable(CustomChunkGenerator::new))
             );
 
-    public static final Block CEILING = Blocks.BEDROCK;
-    public static final Block BASE = Blocks.BEDROCK;
-
+    private static final Block DEFAULT_CEILING = Blocks.BEDROCK;
+    private static final Block DEFAULT_BASE = Blocks.BEDROCK;
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
     private final List<BlockState> LAYERS = Lists.newArrayList();
-    private final int GENERATION_DEPTH = 384;
-    private static final int SEA_LEVEL = -32;
-    private final Supplier<Aquifer.FluidPicker> globalFluidPicker; // I don't understand what this does.
 
     /**
-     * Constructor related to {@link NoiseBasedChunkGenerator}. Utilize with {@link CustomChunkGenerator#withLayers(List)} for proper functionality. Failure to do so may
-     * result in unexpected behavior of the chunk generator.
+     * Constructs a new instance of the CustomChunkGenerator.
      */
     public CustomChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
         super(biomeSource, noiseGeneratorSettings);
-        this.globalFluidPicker = Suppliers.memoize(CustomChunkGenerator::createFluidPicker);
+        setLayers(null);
     }
 
     /**
@@ -72,26 +62,6 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
      * If no list is defined, a default list will populate.
      *
      * @param layers    a list of {@link FlatLayerInfo} describing the block layers to be generated with this chunk. May be {@code null}.
-     * @return  this.
-     */
-    public CustomChunkGenerator withLayers(List<FlatLayerInfo> layers) {
-        setLayers(layers);
-        return this;
-    }
-
-    /**
-     * A copy of the method from NoiseBaseChunkGenerator.
-     * It may not be necessary, but I have it here anyway.
-     **/
-    private static Aquifer.FluidPicker createFluidPicker() {
-        Aquifer.FluidStatus lavaAquifer = new Aquifer.FluidStatus(-60, Blocks.LAVA.defaultBlockState());
-        Aquifer.FluidStatus waterAquifer = new Aquifer.FluidStatus(SEA_LEVEL, Blocks.WATER.defaultBlockState());
-        //Aquifer.FluidStatus fluid2 = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
-        return (x, y, z) -> y < Math.min(-60, SEA_LEVEL) ? lavaAquifer : waterAquifer;
-    }
-
-    /**
-     * Defines the block layers of the chunk.
      */
     private void setLayers(List<FlatLayerInfo> layers) {
         setFlatLayerInfo(layers);
@@ -113,10 +83,10 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private void setDefaultLayers() {
-        FlatLayerInfo layer0 = new FlatLayerInfo(1, BASE);
+        FlatLayerInfo layer0 = new FlatLayerInfo(1, DEFAULT_BASE);
         FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
         FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
-        FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
+        FlatLayerInfo layer3 = new FlatLayerInfo(1, DEFAULT_CEILING);
 
         LAYERS_INFO.add(layer0); // bottom layer
         LAYERS_INFO.add(layer1);
@@ -150,8 +120,11 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
      * {@link net.minecraft.world.level.levelgen.FlatLevelSource#fillFromNoise(Executor, Blender, RandomState, StructureManager, ChunkAccess) fillFromNoise()} method.
      **/
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random,
-                                                        StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor,
+                                                        Blender blender,
+                                                        RandomState random,
+                                                        StructureManager structureManager,
+                                                        ChunkAccess chunk) {
         List<BlockState> list = this.LAYERS;
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
         Heightmap heightmap0 = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
@@ -193,26 +166,16 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-        ;
-    }
-
-    public static int globalGetSeaLevel() {
-        return SEA_LEVEL;
-    }
-
-    @Override
-    public int getGenDepth() {
-        return GENERATION_DEPTH;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return SEA_LEVEL;
-    }
-
-    @Override
     public Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
+
+    public static Block getDefaultCeiling() {
+        return DEFAULT_CEILING;
+    }
+
+    public static Block getDefaultBase() {
+        return DEFAULT_BASE;
+    }
+
 }

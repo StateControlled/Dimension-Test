@@ -42,7 +42,7 @@ public class CustomCarver extends CaveWorldCarver {
                          ChunkAccess chunkAccess,
                          Function<BlockPos, Holder<Biome>> biomeAccessor,
                          RandomSource random,
-                         Aquifer pAquifer,
+                         Aquifer unused,
                          ChunkPos chunkPos,
                          CarvingMask carvingMask) {
 
@@ -60,7 +60,7 @@ public class CustomCarver extends CaveWorldCarver {
         float thickness = 2.0F;
 
         Aquifer aquifer = Aquifer.createDisabled(
-                (pX, pY, pZ) -> new Aquifer.FluidStatus(CustomChunkGenerator.globalGetSeaLevel(), Blocks.WATER.defaultBlockState())
+                (pX, pY, pZ) -> new Aquifer.FluidStatus(-32, Blocks.WATER.defaultBlockState())
         );
 
         WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, check);
@@ -70,7 +70,7 @@ public class CustomCarver extends CaveWorldCarver {
             int jBound = 1;
 
             if (random.nextInt(4) == 0) {
-                double horizontalVerticalRatio = 1.0F;
+                double horizontalVerticalRatio = configuration.yScale.sample(random);
                 float radius = 1.0F + (random.nextFloat() * 8.0F);
 
                 this.createRoom(
@@ -274,13 +274,8 @@ public class CustomCarver extends CaveWorldCarver {
                                   WorldCarver.CarveSkipChecker skipChecker) {
 
         ChunkPos chunkpos = chunkAccess.getPos();
-        double midX = chunkpos.getMiddleBlockX();
-        double midZ = chunkpos.getMiddleBlockZ();
-        double check = 16.0 + horizontalRadius * 2.0;
 
-        // TODO find a way to make this better. Ideally, Y should adjust to the height of the chunk.
-        //if (!(Math.abs(x - midX) > check) && !(Math.abs(z - midZ) > check)) {
-        if (y < 40) {
+        if (y < 54) {
             int minBlockX = chunkpos.getMinBlockX();
             int minBlockZ = chunkpos.getMinBlockZ();
 
@@ -310,7 +305,7 @@ public class CustomCarver extends CaveWorldCarver {
 
                         BlockState blockstate = chunkAccess.getBlockState(position);
 
-                        if (!blockstate.is(CustomChunkGenerator.CEILING)) {
+                        if (!blockstate.is(CustomChunkGenerator.getDefaultCeiling())) {
                             flag |= this.carveBlock(
                                     context,
                                     configuration,
@@ -334,11 +329,6 @@ public class CustomCarver extends CaveWorldCarver {
     }
 
     private static boolean skipCheck(double y, double check) {
-//        if (y < check) {
-//            return true;
-//        } else {
-//            return y >= 1.0;
-//        }
         return y < check;
     }
 

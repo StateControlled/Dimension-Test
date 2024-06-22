@@ -1,6 +1,5 @@
 package com.statecontrolled.dimensiontest.world.dimension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalLong;
 
@@ -20,13 +19,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 
 public class TestDimension {
     public static final ResourceKey<LevelStem> M_LEVEL_STEM          = ResourceKey.create(Registries.LEVEL_STEM,
@@ -68,43 +64,24 @@ public class TestDimension {
         HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
 
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
-                new Climate.ParameterList<>(
-                        List.of(
-                                Pair.of(Climate.parameters(0.75F, 0.6F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
-                                Pair.of(Climate.parameters(0.80F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
-                                Pair.of(Climate.parameters(0.85F, 0.8F, 0.0F, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
-                        )
+            new Climate.ParameterList<>(
+                List.of(
+                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
+                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
+                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0F, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
                 )
+            )
         );
 
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
 
         // CUSTOM CHUNK GENERATION
-        List<FlatLayerInfo> layerInfoList = setFlatLayerInfo();
-
         CustomChunkGenerator customChunk =
-                new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD)).withLayers(layerInfoList);
+                new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH
         context.register(M_LEVEL_STEM, levelStem);
-    }
-
-    private static List<FlatLayerInfo> setFlatLayerInfo() {
-        List<FlatLayerInfo> layerInfoList = new ArrayList<>();
-        Block CEILING = Blocks.BEDROCK;
-        Block BASE = Blocks.BEDROCK;
-
-        FlatLayerInfo layer0 = new FlatLayerInfo(1, BASE);
-        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
-        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
-        FlatLayerInfo layer3 = new FlatLayerInfo(1, CEILING);
-
-        layerInfoList.add(layer0); // bottom layer
-        layerInfoList.add(layer1);
-        layerInfoList.add(layer2);
-        layerInfoList.add(layer3); // top layer
-        return layerInfoList;
     }
 
 }

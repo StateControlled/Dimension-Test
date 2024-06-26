@@ -1,97 +1,113 @@
 package com.statecontrolled.dimensiontest.world.chunk;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.statecontrolled.dimensiontest.DimensionTest;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
-import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 
 /**
- * Chunk generator similar to FlatLevelSource
+ * CustomChunkGenerator class is based on {@code FlatLevelSource} and {@code NoiseBasedChunkGenerator}.
+ * It generates a flatlands-style world.
+ *
+ * @see net.minecraft.world.level.levelgen.FlatLevelSource
+ * @see NoiseBasedChunkGenerator
  **/
-public class TestChunkGenerator extends ChunkGenerator {
+public class TestChunkGenerator extends NoiseBasedChunkGenerator {
     public static final Codec<TestChunkGenerator> CODEC =
-            RecordCodecBuilder.create((instance) ->
-                    instance.group(
-                            FlatLevelGeneratorSettings.CODEC.fieldOf("settings").forGetter(TestChunkGenerator::getSettings),
-                            BiomeSource.CODEC.fieldOf("biome_source").forGetter((chunkGenerator) -> chunkGenerator.biomeSource)
-                    ).apply(instance, instance.stable(TestChunkGenerator::new))
+            RecordCodecBuilder.create(
+                    (generatorInstance) -> generatorInstance.group(
+                            BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource),
+                            NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings)
+                    ).apply(generatorInstance, generatorInstance.stable(TestChunkGenerator::new))
             );
 
-    private final int GENERATION_DEPTH;
-    private final int SEA_LEVEL;
-    private final FlatLevelGeneratorSettings SETTINGS;
+    private static final Block DEFAULT_CEILING = Blocks.BEDROCK;
+    private static final Block DEFAULT_BASE = Blocks.BEDROCK;
+    private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
+    private final List<BlockState> LAYERS = Lists.newArrayList();
 
     /**
-     * Constructor.
-     * @param flatLevelGeneratorSettings    settings
+     * Constructs a new instance of the CustomChunkGenerator.
      */
-    public TestChunkGenerator(FlatLevelGeneratorSettings flatLevelGeneratorSettings, BiomeSource biomeSource) {
-        //super(new FixedBiomeSource(flatLevelGeneratorSettings.getBiome()), Util.memoize(flatLevelGeneratorSettings::adjustGenerationSettings));
-        super(biomeSource, Util.memoize(flatLevelGeneratorSettings::adjustGenerationSettings));
-        this.SETTINGS = flatLevelGeneratorSettings;
-        this.GENERATION_DEPTH = 384;
-        this.SEA_LEVEL = -63;
-        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Custom Chunk Generator");
+    public TestChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> noiseGeneratorSettings) {
+        super(biomeSource, noiseGeneratorSettings);
+        setLayers();
     }
 
+    /**
+     * Defines the block layers that the {@link TestChunkGenerator} will use to build its chunks.
+     */
+    private void setLayers() {
+        setFlatLayerInfo();
+        updateLayers();
+    }
+
+    private void setFlatLayerInfo() {
+        FlatLayerInfo layer0 = new FlatLayerInfo(1, DEFAULT_BASE);
+        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
+        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
+        FlatLayerInfo layer3 = new FlatLayerInfo(1, DEFAULT_CEILING);
+
+        LAYERS_INFO.add(layer0); // bottom layer
+        LAYERS_INFO.add(layer1);
+        LAYERS_INFO.add(layer2);
+        LAYERS_INFO.add(layer3); // top layer
+    }
+
+    /**
+     * Related to {@link FlatLevelGeneratorSettings#updateLayers()} method.
+     */
+    private void updateLayers() {
+        this.LAYERS.clear();
+
+        for(FlatLayerInfo flatlayerinfo : LAYERS_INFO) {
+            for(int i = 0; i < flatlayerinfo.getHeight(); i++) {
+                this.LAYERS.add(flatlayerinfo.getBlockState());
+            }
+        }
+    }
+
+    public List<FlatLayerInfo> getLayerInfo() {
+        return LAYERS_INFO;
+    }
+
+    public int getDepth() {
+        return LAYERS.size();
+    }
+
+    /**
+     * This is really just a slightly modified copy of the {@link net.minecraft.world.level.levelgen.FlatLevelSource FlatLevelSource}
+     * {@link net.minecraft.world.level.levelgen.FlatLevelSource#fillFromNoise(Executor, Blender, RandomState, StructureManager, ChunkAccess) fillFromNoise()} method.
+     **/
     @Override
-    public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structureSetLookup, RandomState randomState, long seed) {
-        Stream<Holder<StructureSet>> stream =
-                this.SETTINGS.structureOverrides().map(HolderSet::stream).orElseGet(
-                        () -> structureSetLookup.listElements().map((reference) -> reference)
-                );
-        return ChunkGeneratorStructureState.createForFlat(randomState, seed, this.biomeSource, stream);
-    }
-
-    public FlatLevelGeneratorSettings getSettings() {
-        return this.SETTINGS;
-    }
-
-    @Override
-    public Codec<? extends ChunkGenerator> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunkAccess) {
-
-    }
-
-    @Override
-    public int getSpawnHeight(LevelHeightAccessor level) {
-        return level.getMinBuildHeight() + Math.min(level.getHeight(), this.SETTINGS.getLayers().size());
-    }
-
-    @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
-        List<BlockState> list = this.SETTINGS.getLayers();
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor,
+                                                        Blender blender,
+                                                        RandomState random,
+                                                        StructureManager structureManager,
+                                                        ChunkAccess chunk) {
+        List<BlockState> list = this.LAYERS;
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
         Heightmap heightmap0 = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap heightmap1 = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
@@ -100,23 +116,27 @@ public class TestChunkGenerator extends ChunkGenerator {
             BlockState blockstate = list.get(i);
 
             if (blockstate != null) {
-                int j = chunk.getMinBuildHeight() + i;
+                int y = chunk.getMinBuildHeight() + i;
 
-                for(int k = 0; k < 16; ++k) {
-                    for(int l = 0; l < 16; ++l) {
-                        chunk.setBlockState(mutableBlockPos.set(k, j, l), blockstate, false);
-                        heightmap0.update(k, j, l, blockstate);
-                        heightmap1.update(k, j, l, blockstate);
+                for(int x = 0; x < 16; ++x) { // 16 is from chunk dimensions : 16 x 16
+                    for(int z = 0; z < 16; ++z) {
+                        chunk.setBlockState(mutableBlockPos.set(x, y, z), blockstate, false);
+                        heightmap0.update(x, y, z, blockstate);
+                        heightmap1.update(x, y, z, blockstate);
                     }
                 }
             }
         }
+
         return CompletableFuture.completedFuture(chunk);
     }
 
+    /**
+     * Copy of FlatLevelSource method.
+     **/
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
-        List<BlockState> list = this.SETTINGS.getLayers();
+        List<BlockState> list = this.LAYERS;
 
         for(int i = Math.min(list.size(), level.getMaxBuildHeight()) - 1; i >= 0; --i) {
             BlockState blockstate = list.get(i);
@@ -128,48 +148,16 @@ public class TestChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor height, RandomState random) {
-        return new NoiseColumn(
-                height.getMinBuildHeight(),
-                this.SETTINGS
-                        .getLayers()
-                        .stream()
-                        .limit(height.getHeight())
-                        .map((blockState) ->
-                                blockState == null ? Blocks.AIR.defaultBlockState() : blockState
-                        )
-                        .toArray(BlockState[]::new)
-        );
+    public Codec<? extends ChunkGenerator> codec() {
+        return CODEC;
     }
 
-    @Override
-    public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {
-        ;
+    public static Block getDefaultCeiling() {
+        return DEFAULT_CEILING;
     }
 
-    @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random,
-                             BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk, GenerationStep.Carving step) {
-
+    public static Block getDefaultBase() {
+        return DEFAULT_BASE;
     }
 
-    @Override
-    public void spawnOriginalMobs(WorldGenRegion level) {
-
-    }
-
-    @Override
-    public int getMinY() {
-        return 0;
-    }
-
-    @Override
-    public int getGenDepth() {
-        return GENERATION_DEPTH;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return SEA_LEVEL;
-    }
 }

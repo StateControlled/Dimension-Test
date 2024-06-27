@@ -4,7 +4,7 @@ import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.cave.CustomCarverConfiguration;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -29,13 +29,13 @@ public class ModBiomes {
     }
 
     public static ResourceKey<Biome> register(String name) {
-        return ResourceKey.create(Registries.BIOME, new ResourceLocation(DimensionTest.MOD_ID, name));
+        return ResourceKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, name));
     }
 
     /**
      * Initialize biomes. Define biome settings.
      **/
-    public static void bootstrap(BootstapContext<Biome> context) {
+    public static void bootstrap(BootstrapContext<Biome> context) {
         context.register(BIOME_ONE, initBiomeOne(context));
         context.register(BIOME_TWO, initBiomeTwo(context));
         context.register(BIOME_THREE, initBiomeThree(context));
@@ -44,7 +44,7 @@ public class ModBiomes {
     /**
      * Setup for Biome_One
      */
-    public static Biome initBiomeOne(BootstapContext<Biome> context) {
+    public static Biome initBiomeOne(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome One");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
@@ -74,7 +74,7 @@ public class ModBiomes {
     /**
      * Setup for Biome_Two
      */
-    public static Biome initBiomeTwo(BootstapContext<Biome> context) {
+    public static Biome initBiomeTwo(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Two");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
@@ -104,7 +104,7 @@ public class ModBiomes {
     /**
      * Setup for Biome_Three
      */
-    public static Biome initBiomeThree(BootstapContext<Biome> context) {
+    public static Biome initBiomeThree(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Three");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();

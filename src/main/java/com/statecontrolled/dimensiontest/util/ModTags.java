@@ -15,11 +15,11 @@ public class ModTags {
     public static class Items {
 
         private static TagKey<Item> tag(String name) {
-            return ItemTags.create(new ResourceLocation(DimensionTest.MOD_ID, name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, name));
         }
 
         private static TagKey<Item> NeoForgeTag(String name) {
-            return ItemTags.create(new ResourceLocation("neoforge", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("neoforge", name));
         }
 
     }
@@ -28,11 +28,11 @@ public class ModTags {
         public static final TagKey<Block> CAVE_WALLS = tag("cave_walls");
 
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(new ResourceLocation(DimensionTest.MOD_ID, name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, name));
         }
 
         private static TagKey<Block> NeoForgeTag(String name) {
-            return BlockTags.create(new ResourceLocation("neoforge", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("neoforge", name));
         }
 
     }
@@ -41,7 +41,7 @@ public class ModTags {
         public static final TagKey<Biome> IS_MOD_BIOME = tag("is_mod_biome");
 
         private static TagKey<Biome> tag(String name) {
-            return TagKey.create(Registries.BIOME, new ResourceLocation(DimensionTest.MOD_ID, name));
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, name));
         }
 
     }

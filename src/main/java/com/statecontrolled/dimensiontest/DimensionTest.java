@@ -16,7 +16,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 /**
- * Copyright 2024 by State_Controlled.
+ * Main class.
+ * <p>
+ * Copyright (c) 2024 by State_Controlled.
  * <p>
  * This source code is released under the MIT License.
  *

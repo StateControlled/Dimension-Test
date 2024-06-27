@@ -3,10 +3,10 @@ package com.statecontrolled.dimensiontest.world.chunk;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
@@ -35,8 +35,8 @@ import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
  * @see NoiseBasedChunkGenerator
  **/
 public class TestChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final Codec<TestChunkGenerator> CODEC =
-            RecordCodecBuilder.create(
+    public static final MapCodec<TestChunkGenerator> CODEC =
+            RecordCodecBuilder.mapCodec(
                     (generatorInstance) -> generatorInstance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings)
@@ -99,11 +99,10 @@ public class TestChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * This is really just a slightly modified copy of the {@link net.minecraft.world.level.levelgen.FlatLevelSource FlatLevelSource}
-     * {@link net.minecraft.world.level.levelgen.FlatLevelSource#fillFromNoise(Executor, Blender, RandomState, StructureManager, ChunkAccess) fillFromNoise()} method.
+     * {@link net.minecraft.world.level.levelgen.FlatLevelSource#fillFromNoise(Blender, RandomState, StructureManager, ChunkAccess) fillFromNoise()} method.
      **/
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor,
-                                                        Blender blender,
+    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender,
                                                         RandomState random,
                                                         StructureManager structureManager,
                                                         ChunkAccess chunk) {
@@ -148,7 +147,7 @@ public class TestChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public Codec<? extends ChunkGenerator> codec() {
+    public MapCodec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 

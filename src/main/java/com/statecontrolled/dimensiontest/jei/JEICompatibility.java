@@ -20,7 +20,7 @@ public class JEICompatibility implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new ResourceLocation(DimensionTest.MOD_ID, "jei_plugin");
+        return ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, "jei_plugin");
     }
 
     @Override

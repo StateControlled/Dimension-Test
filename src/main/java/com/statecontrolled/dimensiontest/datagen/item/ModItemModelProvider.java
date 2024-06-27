@@ -24,8 +24,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerItem(DeferredItem<Item> item, String subDirectory) {
         withExistingParent(item.getId().getPath(),
-                new ResourceLocation("item/" + subDirectory))
-                .texture("layer0", new ResourceLocation(DimensionTest.MOD_ID, "item/" + item.getId().getPath()));
+                ResourceLocation.parse("item/" + subDirectory))
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, "item/" + item.getId().getPath()));
     }
 
 }

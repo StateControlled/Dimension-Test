@@ -4,11 +4,11 @@ import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.command.ListStructuresCommand;
 
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.server.command.ConfigCommand;
 
-@Mod.EventBusSubscriber(modid = DimensionTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = DimensionTest.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEvents {
 
     @SubscribeEvent

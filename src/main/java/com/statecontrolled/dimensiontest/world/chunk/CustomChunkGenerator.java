@@ -42,10 +42,10 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
                     ).apply(generatorInstance, generatorInstance.stable(CustomChunkGenerator::new))
             );
 
-    private static final Block DEFAULT_CEILING = Blocks.BEDROCK;
+    private static final Block DEFAULT_CEILING = Blocks.QUARTZ_BLOCK;
     private static final Block DEFAULT_BASE = Blocks.BEDROCK;
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
-    private final List<BlockState> LAYERS = Lists.newArrayList();
+    private final List<BlockState> LAYERS = new ArrayList<>();
 
     /**
      * Constructs a new instance of the CustomChunkGenerator.

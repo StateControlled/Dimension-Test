@@ -23,6 +23,7 @@ public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_ONE = register("biome_one");
     public static final ResourceKey<Biome> BIOME_TWO = register("biome_two");
     public static final ResourceKey<Biome> BIOME_THREE = register("biome_three");
+    public static final ResourceKey<Biome> BIOME_FOUR = register("biome_four");
 
     private ModBiomes() {
         ;
@@ -39,6 +40,7 @@ public class ModBiomes {
         context.register(BIOME_ONE, initBiomeOne(context));
         context.register(BIOME_TWO, initBiomeTwo(context));
         context.register(BIOME_THREE, initBiomeThree(context));
+        context.register(BIOME_FOUR, initBiomeFour(context));
     }
 
     /**
@@ -127,6 +129,33 @@ public class ModBiomes {
                         .waterFogColor(0xd9ff9f)
                         .skyColor(0xb9e63f)
                         .fogColor(0xf8f7f9)
+                        .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
+                ).build();
+    }
+
+    /**
+     * Setup for Biome_Four. Biome_Four does not have the custom carver attached.
+     */
+    public static Biome initBiomeFour(BootstrapContext<Biome> context) {
+        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Four");
+
+        MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
+        mobSpawnBuilder.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.BLAZE, 8, 1, 3));
+
+        BiomeGenerationSettings.Builder biomeBuilder =
+                new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
+
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .downfall(0.5f)
+                .temperature(0.75f)
+                .generationSettings(biomeBuilder.build())
+                .mobSpawnSettings(mobSpawnBuilder.build())
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0xc9f5a8)
+                        .waterFogColor(0xe9ff9f)
+                        .skyColor(0xb9ea6f)
+                        .fogColor(0xd8d7d9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
     }

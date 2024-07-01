@@ -8,6 +8,7 @@ import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.biome.ModBiomes;
 import com.statecontrolled.dimensiontest.world.chunk.CustomChunkGenerator;
 
+import com.statecontrolled.dimensiontest.world.chunk.TestChunkGenerator;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -73,11 +74,19 @@ public class TestDimension {
             )
         );
 
+        MultiNoiseBiomeSource biomeSource2 = MultiNoiseBiomeSource.createFromList(
+            new Climate.ParameterList<>(
+                List.of(
+                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
+                )
+            )
+        );
+
         HolderGetter<NoiseGeneratorSettings> noiseGeneratorSettings = context.lookup(Registries.NOISE_SETTINGS);
 
         // CUSTOM CHUNK GENERATION
         CustomChunkGenerator customChunk =
-                new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+                new CustomChunkGenerator(biomeSource2, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH

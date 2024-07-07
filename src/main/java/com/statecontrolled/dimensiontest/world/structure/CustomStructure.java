@@ -26,10 +26,10 @@ public class CustomStructure extends Structure {
             instance.group(CustomStructure.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
-                    Codec.intRange(0, Integer.MAX_VALUE - 1).fieldOf("size").forGetter(structure -> structure.size),
+                    Codec.intRange(0, 256).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, Integer.MAX_VALUE - 1).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+                    Codec.intRange(1, 127).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
                     DimensionPadding.CODEC.optionalFieldOf("dimension_padding", JigsawStructure.DEFAULT_DIMENSION_PADDING).forGetter(structure -> structure.dimensionPadding),
                     LiquidSettings.CODEC.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings)
             ).apply(instance, CustomStructure::new));
@@ -43,6 +43,9 @@ public class CustomStructure extends Structure {
     private final DimensionPadding dimensionPadding;
     private final LiquidSettings liquidSettings;
 
+    /**
+     * Constructor
+     */
     public CustomStructure(Structure.StructureSettings config,
                            Holder<StructureTemplatePool> startPool,
                            Optional<ResourceLocation> startJigsawName,
@@ -71,14 +74,14 @@ public class CustomStructure extends Structure {
         // Grabs the chunk position we are at
         ChunkPos chunkpos = context.chunkPos();
 
-        // Checks to make sure our structure does not spawn above land that's higher than y = 150
+        // Checks to make sure our structure does not spawn above land that's higher than y = 156
         // to demonstrate how this method is good for checking extra conditions for spawning
         return context.chunkGenerator().getFirstOccupiedHeight(
                 chunkpos.getMinBlockX(),
                 chunkpos.getMinBlockZ(),
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 context.heightAccessor(),
-                context.randomState()) < 150;
+                context.randomState()) < 156;
     }
 
     @Override
@@ -88,10 +91,16 @@ public class CustomStructure extends Structure {
             return Optional.empty();
         }
 
-        // Set's our spawning blockpos's y offset to be 60 blocks up.
-        // Since we are going to have heightmap/terrain height spawning set to true further down, this will make it so we spawn 60 blocks above terrain.
-        // If we wanted to spawn on ocean floor, we would set heightmap/terrain height spawning to false and the grab the y value of the terrain with OCEAN_FLOOR_WG heightmap.
-        int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
+        // Set's our spawning blockpos y offset to be 60 blocks up.
+        // Since we are going to have heightmap/terrain height spawning set to true further down,
+        // this will make it so we spawn 60 blocks above terrain.
+        // If we wanted to spawn on ocean floor, we would set heightmap/terrain height spawning to false
+        // and the grab the y value of the terrain with OCEAN_FLOOR_WG heightmap.
+        int startY =
+                this.startHeight.sample(
+                        context.random(),
+                        new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor())
+                );
 
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
         ChunkPos chunkPos = context.chunkPos();

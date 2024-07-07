@@ -16,9 +16,6 @@ public class ModStructures {
     public static final DeferredHolder<StructureType<?>, StructureType<CustomStructure>> CUSTOM_STRUCTURE =
             DEFERRED_REGISTRY_STRUCTURE.register("custom_structure", () -> explicitStructureTypeTyping(CustomStructure.CODEC));
 
-    public static final DeferredHolder<StructureType<?>, StructureType<CustomJigsaw>> CUSTOM_JIGSAW =
-            DEFERRED_REGISTRY_STRUCTURE.register("custom_jigsaw", () -> explicitStructureTypeTyping(CustomJigsaw.CODEC));
-
     private static <T extends Structure> StructureType<T> explicitStructureTypeTyping(MapCodec<T> structureCodec) {
         return () -> structureCodec;
     }

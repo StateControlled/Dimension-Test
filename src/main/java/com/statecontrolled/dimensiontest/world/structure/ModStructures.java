@@ -13,8 +13,8 @@ public class ModStructures {
     public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE =
             DeferredRegister.create(Registries.STRUCTURE_TYPE, DimensionTest.MOD_ID);
 
-    public static final DeferredHolder<StructureType<?>, StructureType<CustomStructure>> CUSTOM_STRUCTURE =
-            DEFERRED_REGISTRY_STRUCTURE.register("custom_structure", () -> explicitStructureTypeTyping(CustomStructure.CODEC));
+    public static final DeferredHolder<StructureType<?>, StructureType<SkyStructures>> CUSTOM_STRUCTURE =
+            DEFERRED_REGISTRY_STRUCTURE.register("sky_structures", () -> explicitStructureTypeTyping(SkyStructures.CODEC));
 
     private static <T extends Structure> StructureType<T> explicitStructureTypeTyping(MapCodec<T> structureCodec) {
         return () -> structureCodec;

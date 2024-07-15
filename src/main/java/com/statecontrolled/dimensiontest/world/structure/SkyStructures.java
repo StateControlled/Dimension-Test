@@ -21,18 +21,18 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSetting
 
 import java.util.Optional;
 
-public class CustomStructure extends Structure {
-    public static final MapCodec<CustomStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(CustomStructure.settingsCodec(instance),
+public class SkyStructures extends Structure {
+    public static final MapCodec<SkyStructures> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(SkyStructures.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
-                    Codec.intRange(0, 256).fieldOf("size").forGetter(structure -> structure.size),
+                    Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, 127).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
                     DimensionPadding.CODEC.optionalFieldOf("dimension_padding", JigsawStructure.DEFAULT_DIMENSION_PADDING).forGetter(structure -> structure.dimensionPadding),
                     LiquidSettings.CODEC.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings)
-            ).apply(instance, CustomStructure::new));
+            ).apply(instance, SkyStructures::new));
 
     private final Holder<StructureTemplatePool> startPool;
     private final Optional<ResourceLocation> startJigsawName;
@@ -46,15 +46,15 @@ public class CustomStructure extends Structure {
     /**
      * Constructor
      */
-    public CustomStructure(Structure.StructureSettings config,
-                           Holder<StructureTemplatePool> startPool,
-                           Optional<ResourceLocation> startJigsawName,
-                           int size,
-                           HeightProvider startHeight,
-                           Optional<Heightmap.Types> projectStartToHeightmap,
-                           int maxDistanceFromCenter,
-                           DimensionPadding dimensionPadding,
-                           LiquidSettings liquidSettings) {
+    public SkyStructures(Structure.StructureSettings config,
+                         Holder<StructureTemplatePool> startPool,
+                         Optional<ResourceLocation> startJigsawName,
+                         int size,
+                         HeightProvider startHeight,
+                         Optional<Heightmap.Types> projectStartToHeightmap,
+                         int maxDistanceFromCenter,
+                         DimensionPadding dimensionPadding,
+                         LiquidSettings liquidSettings) {
         super(config);
         this.startPool = startPool;
         this.startJigsawName = startJigsawName;
@@ -74,20 +74,20 @@ public class CustomStructure extends Structure {
         // Grabs the chunk position we are at
         ChunkPos chunkpos = context.chunkPos();
 
-        // Checks to make sure our structure does not spawn above land that's higher than y = 156
+        // Checks to make sure our structure does not spawn above land that's higher than y = 150
         // to demonstrate how this method is good for checking extra conditions for spawning
         return context.chunkGenerator().getFirstOccupiedHeight(
                 chunkpos.getMinBlockX(),
                 chunkpos.getMinBlockZ(),
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 context.heightAccessor(),
-                context.randomState()) < 156;
+                context.randomState()) < 150;
     }
 
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
         // Check if the spot is valid for our structure.
-        if (!CustomStructure.extraSpawningChecks(context)) {
+        if (!SkyStructures.extraSpawningChecks(context)) {
             return Optional.empty();
         }
 

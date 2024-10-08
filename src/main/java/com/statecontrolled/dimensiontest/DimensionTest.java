@@ -12,11 +12,14 @@ import com.statecontrolled.dimensiontest.util.ModCreativeModeTab;
 import com.statecontrolled.dimensiontest.world.cave.ModCarvers;
 import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
 
+import com.statecontrolled.dimensiontest.world.structure.ModStructures;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 /**
- * Copyright 2024 by State_Controlled.
+ * Main class.
+ * <p>
+ * Copyright (c) 2024 by State_Controlled.
  * <p>
  * This source code is released under the MIT License.
  *
@@ -57,6 +60,7 @@ public class DimensionTest {
 
         ModCarvers.register(modEventBus);
 
+        ModStructures.register(modEventBus);
     }
 
 }

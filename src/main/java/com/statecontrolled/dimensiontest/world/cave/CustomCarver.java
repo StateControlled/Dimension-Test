@@ -29,8 +29,8 @@ import net.minecraft.world.level.levelgen.carver.WorldCarver;
  *
  */
 public class CustomCarver extends CaveWorldCarver {
-    private static final int PITCH_CHANGE_CHANCE = 16;
-    private static final float SLOPE = 4.0F;
+    private static final int PITCH_CHANGE_CHANCE = 16 * 2;
+    private static final float SLOPE = 4.0F * 2;
 
     public CustomCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
@@ -53,17 +53,21 @@ public class CustomCarver extends CaveWorldCarver {
                 (pX, pY, pZ) -> new Aquifer.FluidStatus(-32, Blocks.WATER.defaultBlockState())
         );
 
-        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, 0);
+        int check = 64;
+        WorldCarver.CarveSkipChecker carveSkipChecker = (carvingContext, rX, rY, rZ, w) -> skipCheck(rY, check);
 
         // define starting position
         double x = chunkPos.getBlockX(randomEvenNumberInRange(random, 0, 15));
         double z = chunkPos.getBlockZ(randomEvenNumberInRange(random, 0, 15));
+        //double x = 8;
+        //double z = 8;
         double y = configuration.y.sample(random, context);
 
         // iBound will be weighted heavily towards zero
         int iBound = random.nextInt(random.nextInt(random.nextInt(15) + 1) + 1);
         double horizontalRadiusMul = configuration.horizontalRadiusMultiplier.sample(random);
         double verticalRadiusMul   = configuration.verticalRadiusMultiplier.sample(random);
+        //long seed = random.nextLong();
 
         float thickness = 2.0F;
 
@@ -73,7 +77,7 @@ public class CustomCarver extends CaveWorldCarver {
 
             if (random.nextInt(4) == 0) {
                 double horizontalVerticalRatio = configuration.yScale.sample(random);
-                float radius = 1.0F + (random.nextFloat() * 8.0F);
+                float radius = 1 + (random.nextFloat() * 8.0F);
 
                 this.createRoom(
                         context,
@@ -338,6 +342,11 @@ public class CustomCarver extends CaveWorldCarver {
     public double getYScale() {
         return 1.0;
     }
+
+//    @Override
+//    protected float getThickness(RandomSource pRandom) {
+//        return super.getThickness(pRandom);
+//    }
 
     /**
      * @return -1, 0, or 1

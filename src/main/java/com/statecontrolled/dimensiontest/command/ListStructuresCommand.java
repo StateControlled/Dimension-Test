@@ -42,7 +42,12 @@ public class ListStructuresCommand {
                 .stream()
                 .filter(resourceLocation -> resourceLocation.getNamespace().equals(DimensionTest.MOD_ID))
                 .filter(resourceLocation -> resourceLocation.getPath().startsWith("structures"))
-                .map(resourceLocation -> new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath().replaceAll("^structures/", "").replaceAll(".nbt$", "")))
+                .map(resourceLocation ->
+                        ResourceLocation.fromNamespaceAndPath(
+                                resourceLocation.getNamespace(),
+                                resourceLocation.getPath().replaceAll("^structures/", "").replaceAll(".nbt$", "")
+                        )
+                )
                 .toList();
     }
 

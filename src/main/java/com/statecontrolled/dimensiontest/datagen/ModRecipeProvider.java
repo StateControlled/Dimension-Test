@@ -40,7 +40,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     private ResourceLocation register(String path) {
-        return new ResourceLocation(DimensionTest.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, path);
     }
 
 }

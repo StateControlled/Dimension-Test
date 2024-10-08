@@ -9,7 +9,7 @@
   "has_skylight": true,
   "height": 384,
   "infiniburn": "#minecraft:infiniburn_overworld",
-  "logical_height": 320,
+  "logical_height": 384,
   "min_y": -64,
   "monster_spawn_block_light_limit": 4,
   "monster_spawn_light_level": 4,

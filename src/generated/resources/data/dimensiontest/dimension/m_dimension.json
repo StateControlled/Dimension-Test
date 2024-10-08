@@ -40,6 +40,18 @@
             "temperature": 0.75,
             "weirdness": 0.0
           }
+        },
+        {
+          "biome": "dimensiontest:biome_four",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.0,
+            "humidity": 0.7,
+            "offset": 0.0,
+            "temperature": 0.75,
+            "weirdness": 0.0
+          }
         }
       ]
     },

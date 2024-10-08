@@ -10,7 +10,7 @@ import com.statecontrolled.dimensiontest.world.chunk.CustomChunkGenerator;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -26,19 +26,19 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
 public class TestDimension {
     public static final ResourceKey<LevelStem> M_LEVEL_STEM          = ResourceKey.create(Registries.LEVEL_STEM,
-            new ResourceLocation(DimensionTest.MOD_ID, "m_dimension"));
+            ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, "m_dimension"));
 
     public static final ResourceKey<Level> M_LEVEL_KEY               = ResourceKey.create(Registries.DIMENSION,
-            new ResourceLocation(DimensionTest.MOD_ID, "m_dimension"));
+            ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, "m_dimension"));
 
     public static final ResourceKey<DimensionType>  M_DIMENSION_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
-            new ResourceLocation(DimensionTest.MOD_ID, "m_dimension"));
+            ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, "m_dimension"));
 
     private TestDimension() {
         ;
     }
 
-    public static void bootstrapType(BootstapContext<DimensionType> context) {
+    public static void bootstrapType(BootstrapContext<DimensionType> context) {
         context.register(M_DIMENSION_TYPE, new DimensionType(
                         OptionalLong.of(6000),  // freeze time at
                         true,   // hasSkylight
@@ -50,7 +50,7 @@ public class TestDimension {
                         false,  // respawn anchor works
                         -64,    // min Y
                         384,    // height
-                        320,    // logical height
+                        384,    // logical height
                         BlockTags.INFINIBURN_OVERWORLD,
                         BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                         0.9f,  // ambient light
@@ -59,16 +59,25 @@ public class TestDimension {
         );
     }
 
-    public static void bootstrapStem(BootstapContext<LevelStem> context) {
+    public static void bootstrapStem(BootstrapContext<LevelStem> context) {
         HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
         HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
 
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
             new Climate.ParameterList<>(
                 List.of(
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0F, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
+                )
+            )
+        );
+
+        MultiNoiseBiomeSource biomeSource2 = MultiNoiseBiomeSource.createFromList(
+            new Climate.ParameterList<>(
+                List.of(
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
                 )
             )
         );

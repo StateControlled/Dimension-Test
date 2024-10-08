@@ -4,7 +4,7 @@ import com.statecontrolled.dimensiontest.DimensionTest;
 import com.statecontrolled.dimensiontest.world.cave.CustomCarverConfiguration;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -23,28 +23,30 @@ public class ModBiomes {
     public static final ResourceKey<Biome> BIOME_ONE = register("biome_one");
     public static final ResourceKey<Biome> BIOME_TWO = register("biome_two");
     public static final ResourceKey<Biome> BIOME_THREE = register("biome_three");
+    public static final ResourceKey<Biome> BIOME_FOUR = register("biome_four");
 
     private ModBiomes() {
         ;
     }
 
     public static ResourceKey<Biome> register(String name) {
-        return ResourceKey.create(Registries.BIOME, new ResourceLocation(DimensionTest.MOD_ID, name));
+        return ResourceKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(DimensionTest.MOD_ID, name));
     }
 
     /**
      * Initialize biomes. Define biome settings.
      **/
-    public static void bootstrap(BootstapContext<Biome> context) {
+    public static void bootstrap(BootstrapContext<Biome> context) {
         context.register(BIOME_ONE, initBiomeOne(context));
         context.register(BIOME_TWO, initBiomeTwo(context));
         context.register(BIOME_THREE, initBiomeThree(context));
+        context.register(BIOME_FOUR, initBiomeFour(context));
     }
 
     /**
      * Setup for Biome_One
      */
-    public static Biome initBiomeOne(BootstapContext<Biome> context) {
+    public static Biome initBiomeOne(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome One");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
@@ -65,7 +67,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0x98c9f5)
                         .waterFogColor(0x9fd9ff)
-                        .skyColor(0x3fb9e6)
+                        .skyColor(0xff0000)
                         .fogColor(0xf9f8f7)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
@@ -74,7 +76,7 @@ public class ModBiomes {
     /**
      * Setup for Biome_Two
      */
-    public static Biome initBiomeTwo(BootstapContext<Biome> context) {
+    public static Biome initBiomeTwo(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Two");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
@@ -95,7 +97,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xf598c9)
                         .waterFogColor(0xff9fd9)
-                        .skyColor(0x363fb9)
+                        .skyColor(0x00ff00)
                         .fogColor(0xf7f9f8)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
@@ -104,7 +106,7 @@ public class ModBiomes {
     /**
      * Setup for Biome_Three
      */
-    public static Biome initBiomeThree(BootstapContext<Biome> context) {
+    public static Biome initBiomeThree(BootstrapContext<Biome> context) {
         DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Three");
 
         MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
@@ -125,8 +127,38 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xc9f598)
                         .waterFogColor(0xd9ff9f)
-                        .skyColor(0xb9e63f)
+                        .skyColor(0x0000ff)
                         .fogColor(0xf8f7f9)
+                        .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
+                ).build();
+    }
+
+    /**
+     * Setup for Biome_Four. Biome_Four does not have the custom carver attached.
+     */
+    public static Biome initBiomeFour(BootstrapContext<Biome> context) {
+        DimensionTest.LOGGER.log(java.util.logging.Level.INFO, "Init Biome Four");
+
+        MobSpawnSettings.Builder mobSpawnBuilder = new MobSpawnSettings.Builder();
+        mobSpawnBuilder.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.BLAZE, 8, 1, 3));
+
+        BiomeGenerationSettings.Builder biomeBuilder =
+                new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
+
+        // CustomCarver
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
+
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .downfall(0.5f)
+                .temperature(0.75f)
+                .generationSettings(biomeBuilder.build())
+                .mobSpawnSettings(mobSpawnBuilder.build())
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0xc9f5a8)
+                        .waterFogColor(0xe9ff9f)
+                        .skyColor(0x00ffff)
+                        .fogColor(0xd8d7d9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
     }

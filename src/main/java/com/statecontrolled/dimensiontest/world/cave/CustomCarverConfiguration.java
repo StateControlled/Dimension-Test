@@ -28,7 +28,9 @@ public class CustomCarverConfiguration {
 
     public static void bootstrap(BootstrapContext<ConfiguredWorldCarver<?>> context) {
         DimensionTest.LOGGER.log(Level.INFO, "Carver Configuration");
+
         HolderGetter<Block> blockGetter = context.lookup(Registries.BLOCK);
+
         context.register(CUSTOM_CARVER_KEY,
             ModCarvers.CUSTOM_CARVER.get().configured(
                 new CaveCarverConfiguration(
@@ -39,9 +41,9 @@ public class CustomCarverConfiguration {
                     CarverDebugSettings.of(false, Blocks.RED_STAINED_GLASS.defaultBlockState()), // debug block
                     // TODO add mod blocks to replaceables
                     blockGetter.getOrThrow(ModTags.Blocks.CAVE_WALLS),  // blocks that can be replaced
-                    UniformFloat.of(1.0F, 5.0F),    // horizontal
-                    UniformFloat.of(1.0F, 5.0F),    // vertical
-                    UniformFloat.of(0.0F, 1.0F)     // floor level
+                    UniformFloat.of(0.0F, 2.0F),    // horizontal
+                    UniformFloat.of(0.0F, 2.0F),    // vertical
+                    UniformFloat.of(0.0F, 0.9F)     // floor level
                 )
             )
         );

@@ -67,7 +67,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0x98c9f5)
                         .waterFogColor(0x9fd9ff)
-                        .skyColor(0x3fb9e6)
+                        .skyColor(0xff0000)
                         .fogColor(0xf9f8f7)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
@@ -97,7 +97,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xf598c9)
                         .waterFogColor(0xff9fd9)
-                        .skyColor(0x363fb9)
+                        .skyColor(0x00ff00)
                         .fogColor(0xf7f9f8)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
@@ -127,7 +127,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xc9f598)
                         .waterFogColor(0xd9ff9f)
-                        .skyColor(0xb9e63f)
+                        .skyColor(0x0000ff)
                         .fogColor(0xf8f7f9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();
@@ -145,6 +145,9 @@ public class ModBiomes {
         BiomeGenerationSettings.Builder biomeBuilder =
                 new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER));
 
+        // CustomCarver
+        biomeBuilder.addCarver(GenerationStep.Carving.AIR, CustomCarverConfiguration.CUSTOM_CARVER_KEY);
+
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
                 .downfall(0.5f)
@@ -154,7 +157,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xc9f5a8)
                         .waterFogColor(0xe9ff9f)
-                        .skyColor(0xb9ea6f)
+                        .skyColor(0x00ffff)
                         .fogColor(0xd8d7d9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();

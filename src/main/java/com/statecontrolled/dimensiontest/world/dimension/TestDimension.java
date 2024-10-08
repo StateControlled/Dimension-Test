@@ -50,7 +50,7 @@ public class TestDimension {
                         false,  // respawn anchor works
                         -64,    // min Y
                         384,    // height
-                        320,    // logical height
+                        384,    // logical height
                         BlockTags.INFINIBURN_OVERWORLD,
                         BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                         0.9f,  // ambient light
@@ -66,9 +66,10 @@ public class TestDimension {
         MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromList(
             new Climate.ParameterList<>(
                 List.of(
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0F, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE))
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_ONE)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_TWO)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_THREE)),
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
                 )
             )
         );
@@ -76,7 +77,7 @@ public class TestDimension {
         MultiNoiseBiomeSource biomeSource2 = MultiNoiseBiomeSource.createFromList(
             new Climate.ParameterList<>(
                 List.of(
-                    Pair.of(Climate.parameters(0.75F, 0.7F, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
+                    Pair.of(Climate.parameters(0.75f, 0.7f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), biomeRegistry.getOrThrow(ModBiomes.BIOME_FOUR))
                 )
             )
         );
@@ -85,7 +86,7 @@ public class TestDimension {
 
         // CUSTOM CHUNK GENERATION
         CustomChunkGenerator customChunk =
-                new CustomChunkGenerator(biomeSource2, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+                new CustomChunkGenerator(biomeSource, noiseGeneratorSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         LevelStem levelStem = new LevelStem(dimensionTypes.getOrThrow(M_DIMENSION_TYPE), customChunk);
 
         // FINISH

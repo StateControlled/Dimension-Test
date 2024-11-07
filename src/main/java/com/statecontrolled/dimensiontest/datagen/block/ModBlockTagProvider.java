@@ -33,8 +33,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.SAPPHIRE_BLOCK.get());
 
         this.tag(ModTags.Blocks.CAVE_WALLS)
-                .add(Blocks.QUARTZ_BLOCK)
-                .add(Blocks.POLISHED_BLACKSTONE);
+                .add(Blocks.WHITE_CONCRETE)
+                .add(Blocks.BLACK_CONCRETE);
 
     }
 }

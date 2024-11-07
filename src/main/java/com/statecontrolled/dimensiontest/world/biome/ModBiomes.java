@@ -157,7 +157,7 @@ public class ModBiomes {
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0xc9f5a8)
                         .waterFogColor(0xe9ff9f)
-                        .skyColor(0x00ffff)
+                        .skyColor(0xff00ff)
                         .fogColor(0xd8d7d9)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS).build()
                 ).build();

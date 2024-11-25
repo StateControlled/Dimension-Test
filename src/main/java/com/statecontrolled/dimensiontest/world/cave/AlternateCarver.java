@@ -46,6 +46,7 @@ public class AlternateCarver extends CaveWorldCarver {
      * @param chunk    The chunk to be carved
      * @param chunkPos The chunk position this carver is being called from
      */
+    @Override
     public boolean carve(
             CarvingContext carvingContext,
             CaveCarverConfiguration carverConfiguration,
@@ -70,15 +71,16 @@ public class AlternateCarver extends CaveWorldCarver {
             WorldCarver.CarveSkipChecker carveSkipChecker = (sCarvingContext, p_159203_, relativeY, relativeZ, p_159206_) ->
                     shouldSkip(p_159203_, relativeY, relativeZ, minRelativeY);
 
-            int l = 1;
+            int limit = 1;
             if (randomSource.nextInt(4) == 0) {
                 double d6 = carverConfiguration.yScale.sample(randomSource);
                 float f1 = 1.0F + randomSource.nextFloat() * 6.0F;
+
                 this.createRoom(carvingContext, carverConfiguration, chunk, biomeAccessor, aquifer, x, y, z, f1, d6, carvingMask, carveSkipChecker);
-                l += randomSource.nextInt(4);
+                limit += randomSource.nextInt(4) + 1;
             }
 
-            for (int k1 = 0; k1 < l; k1++) {
+            for (int t = 0; t < limit; t++) {
                 float yaw = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
                 float pitch = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
                 float thickness = this.getThickness(randomSource);
@@ -111,6 +113,7 @@ public class AlternateCarver extends CaveWorldCarver {
         return true;
     }
 
+    @Override
     protected float getThickness(RandomSource randomSource) {
         float f = (float) randomEvenNumberInRange(randomSource, 2, 12);
 
@@ -121,6 +124,7 @@ public class AlternateCarver extends CaveWorldCarver {
         return f;
     }
 
+    @Override
     protected void createRoom(
             CarvingContext carvingContext,
             CaveCarverConfiguration carverConfiguration,
@@ -152,6 +156,7 @@ public class AlternateCarver extends CaveWorldCarver {
                 skipChecker);
     }
 
+    @Override
     protected void createTunnel(
             CarvingContext carvingContext,
             CaveCarverConfiguration carverConfiguration,
@@ -247,79 +252,70 @@ public class AlternateCarver extends CaveWorldCarver {
     }
 
     /**
-     * Carves blocks in an ellipsoid (more accurately a spheroid), defined by a center (x, y, z) position,
-     * with a horizontal and vertical radius (the semi-axes)
-     *
+     * Reconfigured to carve rectangular rooms
      * @param skipChecker Used to skip certain blocks within the carved region.
      */
-    protected boolean carveEllipsoid(
-            CarvingContext carvingContext,
-            CaveCarverConfiguration carverConfiguration,
-            ChunkAccess chunk,
-            Function<BlockPos, Holder<Biome>> biomeAccessor,
-            Aquifer aquifer,
-            double x,
-            double y,
-            double z,
-            double horizontalRadius,
-            double verticalRadius,
-            CarvingMask carvingMask,
-            WorldCarver.CarveSkipChecker skipChecker
-    ) {
-        ChunkPos chunkPos = chunk.getPos();
-        double middleBlockX = chunkPos.getMiddleBlockX();
-        double middleBlockZ = chunkPos.getMiddleBlockZ();
-        double d2 = 16.0 + horizontalRadius * 2.0;
+    @Override
+    protected boolean carveEllipsoid(CarvingContext context,
+                                  CaveCarverConfiguration configuration,
+                                  ChunkAccess chunkAccess,
+                                  Function<BlockPos, Holder<Biome>> biomeAccessor,
+                                  Aquifer aquifer,
+                                  double x,
+                                  double y,
+                                  double z,
+                                  double horizontalRadius,
+                                  double verticalRadius,
+                                  CarvingMask carvingMask,
+                                  WorldCarver.CarveSkipChecker skipChecker) {
 
-        if (!(Math.abs(x - middleBlockX) > d2) && !(Math.abs(z - middleBlockZ) > d2)) {
-            int minBlockX = chunkPos.getMinBlockX();
-            int minBlockZ = chunkPos.getMinBlockZ();
+        ChunkPos chunkpos = chunkAccess.getPos();
 
-            int k = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
-            int l = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
+        if (y < 54) {
+            int minBlockX = chunkpos.getMinBlockX();
+            int minBlockZ = chunkpos.getMinBlockZ();
 
-            int i1 = Math.max(Mth.floor(y - verticalRadius) - 1, carvingContext.getMinGenY() + 1);
-            int j1 = chunk.isUpgrading() ? 0 : 7;
-            int k1 = Math.min(Mth.floor(y + verticalRadius) + 1, carvingContext.getMinGenY() + carvingContext.getGenDepth() - 1 - j1);
+            int i       = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
+            int j       = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
+            int k       = Math.max(Mth.floor(y - verticalRadius)   - 1, context.getMinGenY() + 1);
 
-            int l1 = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
-            int i2 = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
+            int xBound  = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
+            int yBound  = Math.min(Mth.floor(y + verticalRadius)   + 1, context.getMinGenY() + context.getGenDepth() - 1 - 7);
+            int zBound  = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
             boolean flag = false;
 
-            BlockPos.MutableBlockPos blockPos1 = new BlockPos.MutableBlockPos();
-            BlockPos.MutableBlockPos blockPos2 = new BlockPos.MutableBlockPos();
+            BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
+            BlockPos.MutableBlockPos checkPosition = new BlockPos.MutableBlockPos();
 
-            for (int j2 = k; j2 <= l; j2++) {
-                int k2 = chunkPos.getBlockX(j2);
-                double d3 = ((double) k2 + 0.5 - x) / horizontalRadius;
+            for(int mX = i; mX <= xBound; mX++) {
+                int posX = chunkpos.getBlockX(mX);
 
-                for (int l2 = l1; l2 <= i2; l2++) {
-                    int i3 = chunkPos.getBlockZ(l2);
-                    double d4 = ((double) i3 + 0.5 - z) / horizontalRadius;
+                for(int mZ = j; mZ <= zBound; mZ++) {
+                    int posZ = chunkpos.getBlockZ(mZ);
 
-                    if (!(d3 * d3 + d4 * d4 >= 1.0)) {
-                        MutableBoolean mutableboolean = new MutableBoolean(false);
+                    MutableBoolean surfaceCheck = new MutableBoolean(false);
 
-                        for (int j3 = k1; j3 > i1; j3--) {
-                            double d5 = ((double)j3 - 0.5 - y) / verticalRadius;
+                    for(int mY = yBound; mY > k; mY--) {
+                        carvingMask.set(mX, mY, mZ);
+                        position.set(posX, mY, posZ);
 
-                            if (!skipChecker.shouldSkip(carvingContext, d3, d5, d4, j3) && (!carvingMask.get(j2, j3, l2) || isDebugEnabled(carverConfiguration))) {
-                                carvingMask.set(j2, j3, l2);
-                                blockPos1.set(k2, j3, i3);
-                                flag |= this.carveBlock(
-                                        carvingContext,
-                                        carverConfiguration,
-                                        chunk,
-                                        biomeAccessor,
-                                        carvingMask,
-                                        blockPos1,
-                                        blockPos2,
-                                        aquifer,
-                                        mutableboolean
-                                );
-                            }
+                        BlockState blockstate = chunkAccess.getBlockState(position);
+
+                        if (!blockstate.is(CustomChunkGenerator.getDefaultCeiling())) {
+                            flag |= this.carveBlock(
+                                    context,
+                                    configuration,
+                                    chunkAccess,
+                                    biomeAccessor,
+                                    carvingMask,
+                                    position,
+                                    checkPosition,
+                                    aquifer,
+                                    surfaceCheck
+                            );
                         }
                     }
+
                 }
             }
             return flag;
@@ -335,6 +331,7 @@ public class AlternateCarver extends CaveWorldCarver {
      * @param checkPos          An additional mutable block position object to be used and modified by the method
      * @param hasReachedSurface Set to true if the block carved was the surface, which is checked as being either grass or mycelium
      */
+    @Override
     protected boolean carveBlock(
             CarvingContext carvingContext,
             CaveCarverConfiguration carverConfiguration,
@@ -347,8 +344,7 @@ public class AlternateCarver extends CaveWorldCarver {
             MutableBoolean hasReachedSurface
     ) {
         BlockState carvePosBlockState = chunk.getBlockState(carvePos);
-
-
+        
         if (carvePosBlockState.is(CustomChunkGenerator.getDefaultCeiling())) {
             hasReachedSurface.setTrue();
         }

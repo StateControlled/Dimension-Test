@@ -34,6 +34,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         this.tag(ModTags.Blocks.CAVE_WALLS)
                 .add(Blocks.WHITE_CONCRETE)
+                .add(Blocks.QUARTZ_BLOCK)
+                .add(Blocks.POLISHED_BLACKSTONE)
                 .add(Blocks.BLACK_CONCRETE);
 
     }

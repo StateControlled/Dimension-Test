@@ -79,10 +79,10 @@ public class AlternateCarver extends CaveWorldCarver {
             }
 
             for (int k1 = 0; k1 < l; k1++) {
-                float f = randomSource.nextFloat() * (float) (Math.PI * 2);
-                float f3 = (randomSource.nextFloat() - 0.5F) / 4.0F;
-                float f2 = this.getThickness(randomSource);
-                int i1 = i - randomSource.nextInt(i / 4);
+                float yaw = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
+                float pitch = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
+                float thickness = this.getThickness(randomSource);
+                int branchCount = i - randomSource.nextInt(i / 4);
 
                 this.createTunnel(
                         carvingContext,
@@ -96,11 +96,11 @@ public class AlternateCarver extends CaveWorldCarver {
                         z,
                         horizontalRadiusMul,
                         verticalRadiusMul,
-                        f2,
-                        f,
-                        f3,
+                        thickness,
+                        yaw,
+                        pitch,
                         0,
-                        i1,
+                        branchCount,
                         this.getYScale(),
                         carvingMask,
                         carveSkipChecker
@@ -175,9 +175,6 @@ public class AlternateCarver extends CaveWorldCarver {
     ) {
         RandomSource randomSource = RandomSource.create(seed);
         int i = randomSource.nextInt(branchCount / 2) + branchCount / 4;
-//        boolean flag = randomSource.nextInt(6) == 0;
-//        float f = 0.0F;
-//        float f1 = 0.0F;
 
         // Check determines if X, Y, or Z are to be incremented
         int test = 16;
@@ -187,18 +184,10 @@ public class AlternateCarver extends CaveWorldCarver {
         for (int j = branchIndex; j < branchCount; j++) {
             double horizontalRad = 1.5 + (double) (Mth.sin((float) Math.PI * (float) j / (float) branchCount) * thickness);
             double verticalRad = horizontalRad * horizontalVerticalRatio;
-//            float f2 = Mth.cos(pitch);
 
-//            x += (Mth.cos(yaw) * f2);
-//            y += Mth.sin(pitch);
-//            z += (Mth.sin(yaw) * f2);
-//            pitch *= flag ? 0.92F : 0.7F;
-//            pitch += f1 * 0.1F;
-//            yaw += f * 0.1F;
-
-            if (check < ((test * 7)/16)) {
+            if (check < ((test * 7) / 16)) {
                 z += increment;
-            } else if (check < ((test * 14)/16)) {
+            } else if (check < ((test * 14) / 16)) {
                 x += increment;
             } else {
                 y += increment;
@@ -206,55 +195,30 @@ public class AlternateCarver extends CaveWorldCarver {
 
             y += pitch;
 
-//            f1 *= 0.9F;
-//            f *= 0.75F;
-//            f1 += (randomSource.nextFloat() - randomSource.nextFloat()) * randomSource.nextFloat() * 2.0F;
-//            f += (randomSource.nextFloat() - randomSource.nextFloat()) * randomSource.nextFloat() * 4.0F;
-
             if (j == i && thickness > 1.0F) {
-                this.createTunnel(
-                        carvingContext,
-                        carverConfiguration,
-                        chunk,
-                        biomeAccessor,
-                        randomSource.nextLong(),
-                        aquifer,
-                        x,
-                        y,
-                        z,
-                        horizontalRadiusMultiplier,
-                        verticalRadiusMultiplier,
-                        randomSource.nextFloat() * 0.5F + 0.5F,
-                        yaw - (float) (Math.PI / 2),
-                        pitch / 3.0F,
-                        j,
-                        branchCount,
-                        1.0,
-                        carvingMask,
-                        skipChecker
-                );
-
-                this.createTunnel(
-                        carvingContext,
-                        carverConfiguration,
-                        chunk,
-                        biomeAccessor,
-                        randomSource.nextLong(),
-                        aquifer,
-                        x,
-                        y,
-                        z,
-                        horizontalRadiusMultiplier,
-                        verticalRadiusMultiplier,
-                        randomSource.nextFloat() * 0.5F + 0.5F,
-                        yaw + (float) (Math.PI / 2),
-                        pitch / 3.0F,
-                        j,
-                        branchCount,
-                        1.0,
-                        carvingMask,
-                        skipChecker
-                );
+                for (int r = 0; r < 2; r++) {
+                    this.createTunnel(
+                            carvingContext,
+                            carverConfiguration,
+                            chunk,
+                            biomeAccessor,
+                            randomSource.nextLong(),
+                            aquifer,
+                            x,
+                            y,
+                            z,
+                            horizontalRadiusMultiplier,
+                            verticalRadiusMultiplier,
+                            randomSource.nextFloat() * 0.5F + 0.5F,
+                            yaw - (float) (Math.PI / 2),
+                            pitch / 3.0F,
+                            j,
+                            branchCount,
+                            1.0,
+                            carvingMask,
+                            skipChecker
+                    );
+                }
 
                 return;
             }
@@ -283,7 +247,8 @@ public class AlternateCarver extends CaveWorldCarver {
     }
 
     /**
-     * Carves blocks in an ellipsoid (more accurately a spheroid), defined by a center (x, y, z) position, with a horizontal and vertical radius (the semi-axes)
+     * Carves blocks in an ellipsoid (more accurately a spheroid), defined by a center (x, y, z) position,
+     * with a horizontal and vertical radius (the semi-axes)
      *
      * @param skipChecker Used to skip certain blocks within the carved region.
      */
@@ -302,20 +267,23 @@ public class AlternateCarver extends CaveWorldCarver {
             WorldCarver.CarveSkipChecker skipChecker
     ) {
         ChunkPos chunkPos = chunk.getPos();
-        double d0 = chunkPos.getMiddleBlockX();
-        double d1 = chunkPos.getMiddleBlockZ();
+        double middleBlockX = chunkPos.getMiddleBlockX();
+        double middleBlockZ = chunkPos.getMiddleBlockZ();
         double d2 = 16.0 + horizontalRadius * 2.0;
 
-        if (!(Math.abs(x - d0) > d2) && !(Math.abs(z - d1) > d2)) {
-            int i = chunkPos.getMinBlockX();
-            int j = chunkPos.getMinBlockZ();
-            int k = Math.max(Mth.floor(x - horizontalRadius) - i - 1, 0);
-            int l = Math.min(Mth.floor(x + horizontalRadius) - i, 15);
+        if (!(Math.abs(x - middleBlockX) > d2) && !(Math.abs(z - middleBlockZ) > d2)) {
+            int minBlockX = chunkPos.getMinBlockX();
+            int minBlockZ = chunkPos.getMinBlockZ();
+
+            int k = Math.max(Mth.floor(x - horizontalRadius) - minBlockX - 1, 0);
+            int l = Math.min(Mth.floor(x + horizontalRadius) - minBlockX, 15);
+
             int i1 = Math.max(Mth.floor(y - verticalRadius) - 1, carvingContext.getMinGenY() + 1);
             int j1 = chunk.isUpgrading() ? 0 : 7;
             int k1 = Math.min(Mth.floor(y + verticalRadius) + 1, carvingContext.getMinGenY() + carvingContext.getGenDepth() - 1 - j1);
-            int l1 = Math.max(Mth.floor(z - horizontalRadius) - j - 1, 0);
-            int i2 = Math.min(Mth.floor(z + horizontalRadius) - j, 15);
+
+            int l1 = Math.max(Mth.floor(z - horizontalRadius) - minBlockZ - 1, 0);
+            int i2 = Math.min(Mth.floor(z + horizontalRadius) - minBlockZ, 15);
             boolean flag = false;
 
             BlockPos.MutableBlockPos blockPos1 = new BlockPos.MutableBlockPos();
@@ -323,11 +291,11 @@ public class AlternateCarver extends CaveWorldCarver {
 
             for (int j2 = k; j2 <= l; j2++) {
                 int k2 = chunkPos.getBlockX(j2);
-                double d3 = ((double)k2 + 0.5 - x) / horizontalRadius;
+                double d3 = ((double) k2 + 0.5 - x) / horizontalRadius;
 
                 for (int l2 = l1; l2 <= i2; l2++) {
                     int i3 = chunkPos.getBlockZ(l2);
-                    double d4 = ((double)i3 + 0.5 - z) / horizontalRadius;
+                    double d4 = ((double) i3 + 0.5 - z) / horizontalRadius;
 
                     if (!(d3 * d3 + d4 * d4 >= 1.0)) {
                         MutableBoolean mutableboolean = new MutableBoolean(false);
@@ -382,7 +350,6 @@ public class AlternateCarver extends CaveWorldCarver {
 
 
         if (carvePosBlockState.is(CustomChunkGenerator.getDefaultCeiling())) {
-        //if (carvePosBlockState.is(Blocks.GRASS_BLOCK) || carvePosBlockState.is(Blocks.MYCELIUM)) {
             hasReachedSurface.setTrue();
         }
 
@@ -409,7 +376,8 @@ public class AlternateCarver extends CaveWorldCarver {
                                 if (!blockState.getFluidState().isEmpty()) {
                                     chunk.markPosForPostprocessing(checkPos);
                                 }
-                        });
+                            }
+                        );
                     }
                 }
 

@@ -43,6 +43,8 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
 
     private static final Block DEFAULT_CEILING = Blocks.WHITE_CONCRETE;
     private static final Block DEFAULT_BASE = Blocks.BEDROCK;
+    private static final Block DEFAULT_UPPER_LAYER = Blocks.QUARTZ_BLOCK;
+    private static final Block DEFAULT_LOWER_LAYER = Blocks.POLISHED_BLACKSTONE;
     private final List<FlatLayerInfo> LAYERS_INFO = new ArrayList<>();
     private final List<BlockState> LAYERS = new ArrayList<>();
 
@@ -82,8 +84,8 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
 
     private void setDefaultLayers() {
         FlatLayerInfo layer0 = new FlatLayerInfo(1, DEFAULT_BASE);
-        FlatLayerInfo layer1 = new FlatLayerInfo(63, Blocks.POLISHED_BLACKSTONE);
-        FlatLayerInfo layer2 = new FlatLayerInfo(63, Blocks.QUARTZ_BLOCK);
+        FlatLayerInfo layer1 = new FlatLayerInfo(63, DEFAULT_LOWER_LAYER);
+        FlatLayerInfo layer2 = new FlatLayerInfo(63, DEFAULT_UPPER_LAYER);
         FlatLayerInfo layer3 = new FlatLayerInfo(1, DEFAULT_CEILING);
 
         LAYERS_INFO.add(layer0); // bottom layer
@@ -173,6 +175,14 @@ public class CustomChunkGenerator extends NoiseBasedChunkGenerator {
 
     public static Block getDefaultBase() {
         return DEFAULT_BASE;
+    }
+
+    public static Block getDefaultLowerLayer() {
+        return DEFAULT_LOWER_LAYER;
+    }
+
+    public static Block getDefaultUpperLayer() {
+        return DEFAULT_UPPER_LAYER;
     }
 
 }

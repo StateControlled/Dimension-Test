@@ -32,6 +32,7 @@ import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 
 public class AlternateCarver extends CaveWorldCarver {
+    private static final float SLOPE = 4.0F * 2;
 
     public AlternateCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
@@ -82,7 +83,7 @@ public class AlternateCarver extends CaveWorldCarver {
 
             for (int t = 0; t < limit; t++) {
                 float yaw = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
-                float pitch = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) : 0;
+                float pitch = randomSource.nextInt(64) < 8 ? randomOneOrZero(randomSource) / SLOPE : 0;
                 float thickness = this.getThickness(randomSource);
                 int branchCount = i - randomSource.nextInt(i / 4);
 
@@ -271,7 +272,7 @@ public class AlternateCarver extends CaveWorldCarver {
 
         ChunkPos chunkpos = chunkAccess.getPos();
 
-        if (y < 54) {
+        if (y < 64) {
             int minBlockX = chunkpos.getMinBlockX();
             int minBlockZ = chunkpos.getMinBlockZ();
 
@@ -399,14 +400,14 @@ public class AlternateCarver extends CaveWorldCarver {
     /**
      * Returns a random even number within the given range.
      *
-     * @param min   the minimum bound (inclusive)
-     * @param max   the maximum bound (inclusive)
-     * @return      a random even number within the range [min, max]
+     * @param minInclusive   the minimum bound (inclusive)
+     * @param maxInclusive   the maximum bound (inclusive)
+     * @return      a random even number within the range [minInclusive, maxInclusive]
      * @throws      IllegalArgumentException if there is no even number in the range
      */
-    public static int randomEvenNumberInRange(RandomSource random, int min, int max) {
-        int evenMin = (min % 2 == 0) ? min : min + 1;
-        int evenMax = (max % 2 == 0) ? max : max - 1;
+    public static int randomEvenNumberInRange(RandomSource random, int minInclusive, int maxInclusive) {
+        int evenMin = (minInclusive % 2 == 0) ? minInclusive : minInclusive + 1;
+        int evenMax = (maxInclusive % 2 == 0) ? maxInclusive : maxInclusive - 1;
 
         if (evenMin > evenMax) {
             throw new IllegalArgumentException("No even numbers in the given range");

@@ -19,6 +19,9 @@ public class ModCarvers {
     public static final DeferredHolder<WorldCarver<?>, CustomCarver> CUSTOM_CARVER =
             CUSTOM_CARVER_REG.register("custom_carver", () -> new CustomCarver(CaveCarverConfiguration.CODEC));
 
+    public static final DeferredHolder<WorldCarver<?>, AlternateCarver> ALTERNATE_CARVER =
+            CUSTOM_CARVER_REG.register("alternate_carver", () -> new AlternateCarver(CaveCarverConfiguration.CODEC));
+
     public static void register(IEventBus event) {
         CUSTOM_CARVER_REG.register(event);
     }

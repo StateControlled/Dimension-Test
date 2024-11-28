@@ -11,8 +11,8 @@ import com.statecontrolled.dimensiontest.item.ModItems;
 import com.statecontrolled.dimensiontest.util.ModCreativeModeTab;
 import com.statecontrolled.dimensiontest.world.cave.ModCarvers;
 import com.statecontrolled.dimensiontest.world.chunk.ModChunkGenerators;
-
 import com.statecontrolled.dimensiontest.world.structure.ModStructures;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
